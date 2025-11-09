@@ -1,8 +1,5 @@
-import {
-	type DNSRecord,
-	type ParseOptions,
-	RecordType,
-} from './records.parser.ts'
+import type { ParseOptions } from '../parser.ts'
+import { type DNSRecord, RecordType } from './records.parser.ts'
 
 export const DEFAULT_TTL = '3600'
 const dnsTypes = Object.keys(RecordType)
@@ -281,7 +278,7 @@ export function normalizeTtl(ttl: string | number | undefined): number {
 	return numPart * units[unit]
 }
 
-export function toFqdn(
+function toFqdn(
 	name: string,
 	origin: string,
 	keepTrailingDot?: boolean,

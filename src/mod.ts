@@ -211,8 +211,8 @@ export { parse } from './parser.ts'
 export { RecordType } from './utils/records.parser.ts'
 
 export type { GenerateOptions, InputRecord } from './generator.ts'
+export type { ParseOptions } from './parser.ts'
 export type {
 	ParsedRecord,
 	ParsedRecordByType,
-	ParseOptions,
 } from './utils/records.parser.ts'

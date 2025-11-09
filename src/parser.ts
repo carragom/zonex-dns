@@ -2,10 +2,19 @@ import { extractRawRecords, sanitize } from './utils/parser.helper.ts'
 import {
 	type ParsedRecord,
 	type ParsedRecordByType,
-	type ParseOptions,
 	RecordType,
 } from './utils/records.parser.ts'
 import * as parser from './utils/records.parser.ts'
+
+/** Options for {@linkcode parse}. */
+export interface ParseOptions {
+	/** @type {boolean} Preserve whitespace and indentation in the parsed output. */
+	preserveSpacing?: boolean
+	/** @type {boolean} Keep the trailing dot on fully qualified domain names. */
+	keepTrailingDot?: boolean
+	/** @type {boolean} Flatten the parsed records into a single array. */
+	flatten?: boolean
+}
 
 /**
  * Parse a BIND-style zone file into structured JSON records.

@@ -82,7 +82,7 @@ export function prepareRecord(
 	}
 }
 
-export function buildRdata(
+function buildRdata(
 	record: InputRecord,
 	fieldMap?: Record<string, string>,
 ): string {
@@ -116,7 +116,7 @@ export function buildRdata(
 	return formatRdataValues(record.type, values)
 }
 
-export function formatRdataValues(
+function formatRdataValues(
 	type: string,
 	values: (string | number | undefined)[],
 ): string {

@@ -30,16 +30,6 @@ export enum RecordType {
 	RP = 'RP',
 }
 
-/** Options for {@linkcode parse}. */
-export interface ParseOptions {
-	/** @type {boolean} Preserve whitespace and indentation in the parsed output. */
-	preserveSpacing?: boolean
-	/** @type {boolean} Keep the trailing dot on fully qualified domain names. */
-	keepTrailingDot?: boolean
-	/** @type {boolean} Flatten the parsed records into a single array. */
-	flatten?: boolean
-}
-
 export interface DNSRecord {
 	name: string
 	type: keyof typeof RecordType
@@ -48,43 +38,50 @@ export interface DNSRecord {
 	rdata: string
 }
 
-export interface ARecord extends DNSRecord {
+export interface DMS {
+	degrees: number
+	minutes: number
+	seconds: number
+	hemisphere: string
+}
+
+interface ARecord extends DNSRecord {
 	type: RecordType.A
 	address: string
 }
 
-export interface AAAARecord extends DNSRecord {
+interface AAAARecord extends DNSRecord {
 	type: RecordType.AAAA
 	address: string
 }
 
-export interface CNAMERecord extends DNSRecord {
+interface CNAMERecord extends DNSRecord {
 	type: RecordType.CNAME
 	target: string
 }
 
-export interface NSRecord extends DNSRecord {
+interface NSRecord extends DNSRecord {
 	type: RecordType.NS
 	host: string
 }
 
-export interface TXTRecord extends DNSRecord {
+interface TXTRecord extends DNSRecord {
 	type: RecordType.TXT
 	text: string
 }
 
-export interface MXRecord extends DNSRecord {
+interface MXRecord extends DNSRecord {
 	type: RecordType.MX
 	priority: number
 	exchange: string
 }
 
-export interface PTRRecord extends DNSRecord {
+interface PTRRecord extends DNSRecord {
 	type: RecordType.PTR
 	ptrdname: string
 }
 
-export interface SOARecord extends DNSRecord {
+interface SOARecord extends DNSRecord {
 	type: RecordType.SOA
 	mname: string
 	rname: string
@@ -95,7 +92,7 @@ export interface SOARecord extends DNSRecord {
 	minimum: number
 }
 
-export interface SRVRecord extends DNSRecord {
+interface SRVRecord extends DNSRecord {
 	type: RecordType.SRV
 	priority: number
 	weight: number
@@ -103,26 +100,19 @@ export interface SRVRecord extends DNSRecord {
 	target: string
 }
 
-export interface CAARecord extends DNSRecord {
+interface CAARecord extends DNSRecord {
 	type: RecordType.CAA
 	flag: number
 	tag: string
 	value: string
 }
 
-export interface SPFRecord extends DNSRecord {
+interface SPFRecord extends DNSRecord {
 	type: RecordType.SPF
 	text: string
 }
 
-export interface DMS {
-	degrees: number
-	minutes: number
-	seconds: number
-	hemisphere: string
-}
-
-export interface LOCRecord extends DNSRecord {
+interface LOCRecord extends DNSRecord {
 	type: RecordType.LOC
 	latitude: DMS
 	longitude: DMS
@@ -132,7 +122,7 @@ export interface LOCRecord extends DNSRecord {
 	vertPrecision: number
 }
 
-export interface DSRecord extends DNSRecord {
+interface DSRecord extends DNSRecord {
 	type: RecordType.DS
 	keyTag: number
 	algorithm: number
@@ -140,7 +130,7 @@ export interface DSRecord extends DNSRecord {
 	digest: string
 }
 
-export interface DNSKEYRecord extends DNSRecord {
+interface DNSKEYRecord extends DNSRecord {
 	type: RecordType.DNSKEY
 	flags: number
 	protocol: number
@@ -148,7 +138,7 @@ export interface DNSKEYRecord extends DNSRecord {
 	publicKey: string
 }
 
-export interface TLSARecord extends DNSRecord {
+interface TLSARecord extends DNSRecord {
 	type: RecordType.TLSA
 	usage: number
 	selector: number
@@ -156,21 +146,21 @@ export interface TLSARecord extends DNSRecord {
 	certificateAssociationData: string
 }
 
-export interface SSHFPRecord extends DNSRecord {
+interface SSHFPRecord extends DNSRecord {
 	type: RecordType.SSHFP
 	algorithm: number
 	fingerprintType: number
 	fingerprint: string
 }
 
-export interface HTTPSRecord extends DNSRecord {
+interface HTTPSRecord extends DNSRecord {
 	type: RecordType.HTTPS
 	priority: number
 	target: string
 	params: string
 }
 
-export interface IPSECKEYRecord extends DNSRecord {
+interface IPSECKEYRecord extends DNSRecord {
 	type: RecordType.IPSECKEY
 	precedence: number
 	gatewayType: number
@@ -179,12 +169,12 @@ export interface IPSECKEYRecord extends DNSRecord {
 	publicKey: string
 }
 
-export interface ALIASRecord extends DNSRecord {
+interface ALIASRecord extends DNSRecord {
 	type: RecordType.ALIAS
 	target: string
 }
 
-export interface NAPTRRecord extends DNSRecord {
+interface NAPTRRecord extends DNSRecord {
 	type: RecordType.NAPTR
 	order: number
 	preference: number
@@ -194,7 +184,7 @@ export interface NAPTRRecord extends DNSRecord {
 	replacement: string
 }
 
-export interface CERTRecord extends DNSRecord {
+interface CERTRecord extends DNSRecord {
 	type: RecordType.CERT
 	certType: number
 	keyTag: number
@@ -202,7 +192,7 @@ export interface CERTRecord extends DNSRecord {
 	certificate: string
 }
 
-export interface SMIMEARecord extends DNSRecord {
+interface SMIMEARecord extends DNSRecord {
 	type: RecordType.SMIMEA
 	usage: number
 	selector: number
@@ -210,37 +200,37 @@ export interface SMIMEARecord extends DNSRecord {
 	certAssociationData: string
 }
 
-export interface SVCBRecord extends DNSRecord {
+interface SVCBRecord extends DNSRecord {
 	type: RecordType.SVCB
 	priority: number
 	target: string
 	params: string
 }
 
-export interface URIRecord extends DNSRecord {
+interface URIRecord extends DNSRecord {
 	type: RecordType.URI
 	priority: number
 	weight: number
 	target: string
 }
 
-export interface DNAMERecord extends DNSRecord {
+interface DNAMERecord extends DNSRecord {
 	type: RecordType.DNAME
 	target: string
 }
 
-export interface HINFORecord extends DNSRecord {
+interface HINFORecord extends DNSRecord {
 	type: RecordType.HINFO
 	cpu: string
 	os: string
 }
 
-export interface OPENPGPKEYRecord extends DNSRecord {
+interface OPENPGPKEYRecord extends DNSRecord {
 	type: RecordType.OPENPGPKEY
 	publicKey: string
 }
 
-export interface RPRecord extends DNSRecord {
+interface RPRecord extends DNSRecord {
 	type: RecordType.RP
 	mailbox: string
 	txtDomain: string
@@ -284,7 +274,7 @@ export type ParsedRecordByType = {
 	[T in RecordType]: Extract<ParsedRecord, { type: T }>[]
 }
 
-export function parseSOA(dnsRecord: DNSRecord): ParsedRecord {
+function parseSOA(dnsRecord: DNSRecord): ParsedRecord {
 	const [mname, rname, serial, refresh, retry, expire, minimum] = dnsRecord
 		.rdata.trim().split(/\s+/)
 
@@ -301,7 +291,7 @@ export function parseSOA(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseNS(dnsRecord: DNSRecord): ParsedRecord {
+function parseNS(dnsRecord: DNSRecord): ParsedRecord {
 	return {
 		...dnsRecord,
 		type: RecordType.NS,
@@ -309,7 +299,7 @@ export function parseNS(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseA(dnsRecord: DNSRecord): ParsedRecord {
+function parseA(dnsRecord: DNSRecord): ParsedRecord {
 	return {
 		...dnsRecord,
 		type: RecordType.A,
@@ -317,7 +307,7 @@ export function parseA(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseAAAA(dnsRecord: DNSRecord): ParsedRecord {
+function parseAAAA(dnsRecord: DNSRecord): ParsedRecord {
 	return {
 		...dnsRecord,
 		type: RecordType.AAAA,
@@ -325,7 +315,7 @@ export function parseAAAA(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseCNAME(dnsRecord: DNSRecord): ParsedRecord {
+function parseCNAME(dnsRecord: DNSRecord): ParsedRecord {
 	return {
 		...dnsRecord,
 		type: RecordType.CNAME,
@@ -333,7 +323,7 @@ export function parseCNAME(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseTXT(dnsRecord: DNSRecord): ParsedRecord {
+function parseTXT(dnsRecord: DNSRecord): ParsedRecord {
 	return {
 		...dnsRecord,
 		type: RecordType.TXT,
@@ -341,7 +331,7 @@ export function parseTXT(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseMX(dnsRecord: DNSRecord): ParsedRecord {
+function parseMX(dnsRecord: DNSRecord): ParsedRecord {
 	const [priority, exchange] = dnsRecord.rdata.trim().split(/\s+/)
 
 	return {
@@ -352,7 +342,7 @@ export function parseMX(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parsePTR(dnsRecord: DNSRecord): ParsedRecord {
+function parsePTR(dnsRecord: DNSRecord): ParsedRecord {
 	return {
 		...dnsRecord,
 		type: RecordType.PTR,
@@ -360,7 +350,7 @@ export function parsePTR(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseSRV(dnsRecord: DNSRecord): ParsedRecord {
+function parseSRV(dnsRecord: DNSRecord): ParsedRecord {
 	const [priority, weight, port, target] = dnsRecord.rdata.trim().split(
 		/\s+/,
 	)
@@ -375,7 +365,7 @@ export function parseSRV(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseCAA(dnsRecord: DNSRecord): ParsedRecord {
+function parseCAA(dnsRecord: DNSRecord): ParsedRecord {
 	const parts = dnsRecord.rdata.trim().split(/\s+/)
 
 	const flag = parts[0] ? Number(parts[0]) : 0
@@ -391,7 +381,7 @@ export function parseCAA(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseSPF(dnsRecord: DNSRecord): ParsedRecord {
+function parseSPF(dnsRecord: DNSRecord): ParsedRecord {
 	const text = dnsRecord.rdata.trim().replace(/^"|"$/g, '')
 
 	return {
@@ -401,7 +391,7 @@ export function parseSPF(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseLOC(dnsRecord: DNSRecord): ParsedRecord {
+function parseLOC(dnsRecord: DNSRecord): ParsedRecord {
 	const parts = dnsRecord.rdata.trim().split(/\s+/)
 
 	let i = 0
@@ -468,7 +458,7 @@ export function parseLOC(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseDS(dnsRecord: DNSRecord): ParsedRecord {
+function parseDS(dnsRecord: DNSRecord): ParsedRecord {
 	const parts = dnsRecord.rdata.trim().split(/\s+/)
 
 	return {
@@ -481,7 +471,7 @@ export function parseDS(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseDNSKEY(dnsRecord: DNSRecord): ParsedRecord {
+function parseDNSKEY(dnsRecord: DNSRecord): ParsedRecord {
 	const parts = dnsRecord.rdata.trim().split(/\s+/)
 
 	return {
@@ -494,7 +484,7 @@ export function parseDNSKEY(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseTLSA(dnsRecord: DNSRecord): ParsedRecord {
+function parseTLSA(dnsRecord: DNSRecord): ParsedRecord {
 	const parts = dnsRecord.rdata.trim().split(/\s+/)
 
 	return {
@@ -507,7 +497,7 @@ export function parseTLSA(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseSSHFP(dnsRecord: DNSRecord): ParsedRecord {
+function parseSSHFP(dnsRecord: DNSRecord): ParsedRecord {
 	const parts = dnsRecord.rdata.trim().split(/\s+/)
 
 	return {
@@ -519,7 +509,7 @@ export function parseSSHFP(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseHTTPS(dnsRecord: DNSRecord): ParsedRecord {
+function parseHTTPS(dnsRecord: DNSRecord): ParsedRecord {
 	const parts = dnsRecord.rdata.trim().split(/\s+/)
 
 	// Extract priority
@@ -540,7 +530,7 @@ export function parseHTTPS(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseIPSECKEY(dnsRecord: DNSRecord): ParsedRecord {
+function parseIPSECKEY(dnsRecord: DNSRecord): ParsedRecord {
 	const parts = dnsRecord.rdata.trim().split(/\s+/)
 
 	return {
@@ -554,7 +544,7 @@ export function parseIPSECKEY(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseALIAS(dnsRecord: DNSRecord): ParsedRecord {
+function parseALIAS(dnsRecord: DNSRecord): ParsedRecord {
 	const target = dnsRecord.rdata.trim() || ''
 
 	return {
@@ -564,7 +554,7 @@ export function parseALIAS(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseNAPTR(dnsRecord: DNSRecord): ParsedRecord {
+function parseNAPTR(dnsRecord: DNSRecord): ParsedRecord {
 	const parts = dnsRecord.rdata.trim().match(/(?:[^\s"]+|"[^"]*")+/g) || []
 
 	return {
@@ -579,7 +569,7 @@ export function parseNAPTR(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseCERT(dnsRecord: DNSRecord): ParsedRecord {
+function parseCERT(dnsRecord: DNSRecord): ParsedRecord {
 	const parts = dnsRecord.rdata.trim().split(/\s+/)
 
 	return {
@@ -592,7 +582,7 @@ export function parseCERT(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseSMIMEA(dnsRecord: DNSRecord): ParsedRecord {
+function parseSMIMEA(dnsRecord: DNSRecord): ParsedRecord {
 	const parts = dnsRecord.rdata.trim().split(/\s+/)
 
 	return {
@@ -605,7 +595,7 @@ export function parseSMIMEA(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseSVCB(dnsRecord: DNSRecord): ParsedRecord {
+function parseSVCB(dnsRecord: DNSRecord): ParsedRecord {
 	const parts = dnsRecord.rdata.trim().split(/\s+/)
 
 	const priority = parts[0] ? Number(parts[0]) || 0 : 0
@@ -621,7 +611,7 @@ export function parseSVCB(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseURI(dnsRecord: DNSRecord): ParsedRecord {
+function parseURI(dnsRecord: DNSRecord): ParsedRecord {
 	const parts = dnsRecord.rdata.trim().match(/(?:[^\s"]+|"[^"]*")+/g) || []
 
 	return {
@@ -633,7 +623,7 @@ export function parseURI(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseDNAME(dnsRecord: DNSRecord): ParsedRecord {
+function parseDNAME(dnsRecord: DNSRecord): ParsedRecord {
 	const target = dnsRecord.rdata.trim().replace(/^"|"$/g, '')
 	return {
 		...dnsRecord,
@@ -642,7 +632,7 @@ export function parseDNAME(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseHINFO(dnsRecord: DNSRecord): ParsedRecord {
+function parseHINFO(dnsRecord: DNSRecord): ParsedRecord {
 	const parts = dnsRecord.rdata.trim().match(/(?:[^\s"]+|"[^"]*")+/g) || []
 	const cpu = parts[0] ? parts[0].replace(/^"|"$/g, '') : ''
 	const os = parts[1] ? parts[1].replace(/^"|"$/g, '') : ''
@@ -655,7 +645,7 @@ export function parseHINFO(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseOPENPGPKEY(dnsRecord: DNSRecord): ParsedRecord {
+function parseOPENPGPKEY(dnsRecord: DNSRecord): ParsedRecord {
 	const publicKey = dnsRecord.rdata.trim().replace(/^"|"$/g, '')
 
 	return {
@@ -665,7 +655,7 @@ export function parseOPENPGPKEY(dnsRecord: DNSRecord): ParsedRecord {
 	}
 }
 
-export function parseRP(dnsRecord: DNSRecord): ParsedRecord {
+function parseRP(dnsRecord: DNSRecord): ParsedRecord {
 	const parts = dnsRecord.rdata.trim().match(/(?:[^\s"]+|"[^"]*")+/g) || []
 	const mailbox = parts[0] ? parts[0].replace(/^"|"$/g, '') : ''
 	const txtDomain = parts[1] ? parts[1].replace(/^"|"$/g, '') : ''
