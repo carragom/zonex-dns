@@ -15,8 +15,68 @@ import * as parser from "./utils/records.parser.ts";
  * @returns {ParsedRecordByType | ParsedRecord[]} Parsed DNS records in either grouped or flattened format.
  *
  * @example
+ * ```ts
+ * import { parse } from 'zonex';
  *
  * const records = parse(input);
+ * console.log(JSON.stringify(records, null, 2));
+ * ```
+ *
+ * Expected Output:
+ * ```json
+ * {
+ *   "A": [
+ *     {
+ *       "name": "example.com.",
+ *       "ttl": 600,
+ *       "class": "IN",
+ *       "type": "A",
+ *       "rdata": "192.0.2.1",
+ *       "address": "192.0.2.1"
+ *     }
+ *   ],
+ *   "CNAME": [
+ *     {
+ *       "name": "www.example.com.",
+ *       "ttl": 3600,
+ *       "class": "IN",
+ *       "type": "CNAME",
+ *       "rdata": "example.com.",
+ *       "target": "example.com."
+ *     }
+ *   ]
+ * }
+ * ```
+ *
+ * @example Flattened Output
+ * ```ts
+ * import { parse } from 'zonex';
+ *
+ * const records = parse(input, { flatten: true });
+ * console.log(JSON.stringify(records, null, 2));
+ * ```
+ *
+ * Expected Output:
+ * ```json
+ * [
+ *   {
+ *     "name": "example.com.",
+ *     "ttl": 600,
+ *     "class": "IN",
+ *     "type": "A",
+ *     "rdata": "192.0.2.1",
+ *     "address": "192.0.2.1"
+ *   },
+ *   {
+ *     "name": "www.example.com.",
+ *     "ttl": 3600,
+ *     "class": "IN",
+ *     "type": "CNAME",
+ *     "rdata": "example.com.",
+ *     "target": "example.com."
+ *   }
+ * ]
+ * ```
  */
 
 export function parse(
