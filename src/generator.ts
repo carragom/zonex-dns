@@ -1,5 +1,9 @@
 import { prepareRecord } from "./utils/generator.helper.ts";
-import type { DMS, DNSRecordsByType, RecordType } from "./utils/records.parser.ts";
+import type {
+    DMS,
+    DNSRecordsByType,
+    RecordType,
+} from "./utils/records.parser.ts";
 
 /**
  * Generates a BIND-style DNS zone file string from input records.
@@ -26,10 +30,10 @@ import type { DMS, DNSRecordsByType, RecordType } from "./utils/records.parser.t
  * ```
  */
 
-export const generate = (
+export function generate(
     records: InputRecord[],
     options?: GenerateOptions,
-): string => {
+): string {
     const { keepComments = true, keepHeaders = true, origin = "", ttl = 3600 } =
         options || {};
 
@@ -42,7 +46,7 @@ export const generate = (
     }, {} as DNSRecordsByType);
 
     return toZoneFile(groupedRecords, origin, ttl, keepComments, keepHeaders);
-};
+}
 
 /**
  * Converts structured DNS records into a BIND-style zone file string.
@@ -56,13 +60,13 @@ export const generate = (
  * @returns A BIND-style zone file string.
  */
 
-const toZoneFile = (
+function toZoneFile(
     dnsRecords: DNSRecordsByType,
     origin: string,
     ttl: number,
     keepComments: boolean = true,
     keepHeaders: boolean = true,
-): string => {
+): string {
     const zoneEntries = Object.entries(dnsRecords);
     let zoneFileContent = "";
 
@@ -127,7 +131,7 @@ const toZoneFile = (
     }
 
     return zoneFileContent;
-};
+}
 
 /** Options for {@linkcode generate}. */
 export interface GenerateOptions {

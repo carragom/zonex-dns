@@ -40,7 +40,6 @@ export interface ParseOptions {
     flatten?: boolean;
 }
 
-
 export interface DNSRecord {
     name: string;
     type: keyof typeof RecordType;
@@ -285,7 +284,7 @@ export type ParsedRecordByType = {
     [T in RecordType]: Extract<ParsedRecord, { type: T }>[];
 };
 
-export const parseSOA = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseSOA(dnsRecord: DNSRecord): ParsedRecord {
     const [mname, rname, serial, refresh, retry, expire, minimum] = dnsRecord
         .rdata.trim().split(/\s+/);
 
@@ -300,39 +299,49 @@ export const parseSOA = (dnsRecord: DNSRecord): ParsedRecord => {
         expire: Number(expire) || 0,
         minimum: Number(minimum) || 0,
     };
-};
+}
 
-export const parseNS = (dnsRecord: DNSRecord): ParsedRecord => ({
-    ...dnsRecord,
-    type: RecordType.NS,
-    host: dnsRecord.rdata.trim(),
-});
+export function parseNS(dnsRecord: DNSRecord): ParsedRecord {
+    return {
+        ...dnsRecord,
+        type: RecordType.NS,
+        host: dnsRecord.rdata.trim(),
+    };
+}
 
-export const parseA = (dnsRecord: DNSRecord): ParsedRecord => ({
-    ...dnsRecord,
-    type: RecordType.A,
-    address: dnsRecord.rdata.trim(),
-});
+export function parseA(dnsRecord: DNSRecord): ParsedRecord {
+    return {
+        ...dnsRecord,
+        type: RecordType.A,
+        address: dnsRecord.rdata.trim(),
+    };
+}
 
-export const parseAAAA = (dnsRecord: DNSRecord): ParsedRecord => ({
-    ...dnsRecord,
-    type: RecordType.AAAA,
-    address: dnsRecord.rdata.trim(),
-});
+export function parseAAAA(dnsRecord: DNSRecord): ParsedRecord {
+    return {
+        ...dnsRecord,
+        type: RecordType.AAAA,
+        address: dnsRecord.rdata.trim(),
+    };
+}
 
-export const parseCNAME = (dnsRecord: DNSRecord): ParsedRecord => ({
-    ...dnsRecord,
-    type: RecordType.CNAME,
-    target: dnsRecord.rdata.trim(),
-});
+export function parseCNAME(dnsRecord: DNSRecord): ParsedRecord {
+    return {
+        ...dnsRecord,
+        type: RecordType.CNAME,
+        target: dnsRecord.rdata.trim(),
+    };
+}
 
-export const parseTXT = (dnsRecord: DNSRecord): ParsedRecord => ({
-    ...dnsRecord,
-    type: RecordType.TXT,
-    text: dnsRecord.rdata.trim(),
-});
+export function parseTXT(dnsRecord: DNSRecord): ParsedRecord {
+    return {
+        ...dnsRecord,
+        type: RecordType.TXT,
+        text: dnsRecord.rdata.trim(),
+    };
+}
 
-export const parseMX = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseMX(dnsRecord: DNSRecord): ParsedRecord {
     const [priority, exchange] = dnsRecord.rdata.trim().split(/\s+/);
 
     return {
@@ -341,15 +350,17 @@ export const parseMX = (dnsRecord: DNSRecord): ParsedRecord => {
         priority: Number(priority),
         exchange,
     };
-};
+}
 
-export const parsePTR = (dnsRecord: DNSRecord): ParsedRecord => ({
-    ...dnsRecord,
-    type: RecordType.PTR,
-    ptrdname: dnsRecord.rdata.trim(),
-});
+export function parsePTR(dnsRecord: DNSRecord): ParsedRecord {
+    return {
+        ...dnsRecord,
+        type: RecordType.PTR,
+        ptrdname: dnsRecord.rdata.trim(),
+    };
+}
 
-export const parseSRV = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseSRV(dnsRecord: DNSRecord): ParsedRecord {
     const [priority, weight, port, target] = dnsRecord.rdata.trim().split(
         /\s+/,
     );
@@ -362,9 +373,9 @@ export const parseSRV = (dnsRecord: DNSRecord): ParsedRecord => {
         port: Number(port) || 0,
         target,
     };
-};
+}
 
-export const parseCAA = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseCAA(dnsRecord: DNSRecord): ParsedRecord {
     const parts = dnsRecord.rdata.trim().split(/\s+/);
 
     const flag = parts[0] ? Number(parts[0]) : 0;
@@ -378,9 +389,9 @@ export const parseCAA = (dnsRecord: DNSRecord): ParsedRecord => {
         tag,
         value,
     };
-};
+}
 
-export const parseSPF = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseSPF(dnsRecord: DNSRecord): ParsedRecord {
     const text = dnsRecord.rdata.trim().replace(/^"|"$/g, "");
 
     return {
@@ -388,38 +399,36 @@ export const parseSPF = (dnsRecord: DNSRecord): ParsedRecord => {
         type: RecordType.SPF,
         text,
     };
-};
+}
 
-export const parseLOC = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseLOC(dnsRecord: DNSRecord): ParsedRecord {
     const parts = dnsRecord.rdata.trim().split(/\s+/);
-
-    const parseNum = (val?: string) => (val ? Number(val) || 0 : 0);
 
     let i = 0;
 
     /* :::: Latitude :::: */
-    const latDeg = parseNum(parts[i++]);
+    const latDeg = Number(parts[i++]);
     let latMin = 0, latSec = 0;
     let latHem = "N";
     if (i < parts.length && !/^[NS]$/i.test(parts[i])) {
-        latMin = parseNum(parts[i++]);
+        latMin = Number(parts[i++]);
     }
     if (i < parts.length && !/^[NS]$/i.test(parts[i])) {
-        latSec = parseNum(parts[i++]);
+        latSec = Number(parts[i++]);
     }
     if (i < parts.length && /^[NS]$/i.test(parts[i])) {
         latHem = parts[i++].toUpperCase();
     }
 
     /* :::: Longitude :::: */
-    const lonDeg = parseNum(parts[i++]);
+    const lonDeg = Number(parts[i++]);
     let lonMin = 0, lonSec = 0;
     let lonHem = "E";
     if (i < parts.length && !/^[EW]$/i.test(parts[i])) {
-        lonMin = parseNum(parts[i++]);
+        lonMin = Number(parts[i++]);
     }
     if (i < parts.length && !/^[EW]$/i.test(parts[i])) {
-        lonSec = parseNum(parts[i++]);
+        lonSec = Number(parts[i++]);
     }
     if (i < parts.length && /^[EW]$/i.test(parts[i])) {
         lonHem = parts[i++].toUpperCase();
@@ -427,16 +436,14 @@ export const parseLOC = (dnsRecord: DNSRecord): ParsedRecord => {
 
     /* :::: Optional altitude and precision :::: */
     const altitude = i < parts.length
-        ? parseNum(parts[i++].replace(/[mM]/, ""))
+        ? Number(parts[i++].replace(/[mM]/, ""))
         : 0;
-    const size = i < parts.length
-        ? parseNum(parts[i++].replace(/[mM]/, ""))
-        : 1;
+    const size = i < parts.length ? Number(parts[i++].replace(/[mM]/, "")) : 1;
     const horizPrecision = i < parts.length
-        ? parseNum(parts[i++].replace(/[mM]/, ""))
+        ? Number(parts[i++].replace(/[mM]/, ""))
         : 10000;
     const vertPrecision = i < parts.length
-        ? parseNum(parts[i++].replace(/[mM]/, ""))
+        ? Number(parts[i++].replace(/[mM]/, ""))
         : 10;
 
     return {
@@ -459,9 +466,9 @@ export const parseLOC = (dnsRecord: DNSRecord): ParsedRecord => {
         horizPrecision,
         vertPrecision,
     };
-};
+}
 
-export const parseDS = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseDS(dnsRecord: DNSRecord): ParsedRecord {
     const parts = dnsRecord.rdata.trim().split(/\s+/);
 
     return {
@@ -472,9 +479,9 @@ export const parseDS = (dnsRecord: DNSRecord): ParsedRecord => {
         digestType: parts[2] ? Number(parts[2]) || 0 : 0,
         digest: parts[3] || "",
     };
-};
+}
 
-export const parseDNSKEY = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseDNSKEY(dnsRecord: DNSRecord): ParsedRecord {
     const parts = dnsRecord.rdata.trim().split(/\s+/);
 
     return {
@@ -485,9 +492,9 @@ export const parseDNSKEY = (dnsRecord: DNSRecord): ParsedRecord => {
         algorithm: parts[2] ? Number(parts[2]) || 0 : 0,
         publicKey: parts.slice(3).join(" ") || "",
     };
-};
+}
 
-export const parseTLSA = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseTLSA(dnsRecord: DNSRecord): ParsedRecord {
     const parts = dnsRecord.rdata.trim().split(/\s+/);
 
     return {
@@ -498,9 +505,9 @@ export const parseTLSA = (dnsRecord: DNSRecord): ParsedRecord => {
         matchingType: parts[2] ? Number(parts[2]) || 0 : 0,
         certificateAssociationData: parts.slice(3).join(" ") || "",
     };
-};
+}
 
-export const parseSSHFP = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseSSHFP(dnsRecord: DNSRecord): ParsedRecord {
     const parts = dnsRecord.rdata.trim().split(/\s+/);
 
     return {
@@ -510,9 +517,9 @@ export const parseSSHFP = (dnsRecord: DNSRecord): ParsedRecord => {
         fingerprintType: parts[1] ? Number(parts[1]) || 0 : 0,
         fingerprint: parts.slice(2).join("") || "",
     };
-};
+}
 
-export const parseHTTPS = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseHTTPS(dnsRecord: DNSRecord): ParsedRecord {
     const parts = dnsRecord.rdata.trim().split(/\s+/);
 
     // Extract priority
@@ -531,9 +538,9 @@ export const parseHTTPS = (dnsRecord: DNSRecord): ParsedRecord => {
         target,
         params,
     };
-};
+}
 
-export const parseIPSECKEY = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseIPSECKEY(dnsRecord: DNSRecord): ParsedRecord {
     const parts = dnsRecord.rdata.trim().split(/\s+/);
 
     return {
@@ -545,9 +552,9 @@ export const parseIPSECKEY = (dnsRecord: DNSRecord): ParsedRecord => {
         gateway: parts[3] || "",
         publicKey: parts.slice(4).join(" ") || "",
     };
-};
+}
 
-export const parseALIAS = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseALIAS(dnsRecord: DNSRecord): ParsedRecord {
     const target = dnsRecord.rdata.trim() || "";
 
     return {
@@ -555,9 +562,9 @@ export const parseALIAS = (dnsRecord: DNSRecord): ParsedRecord => {
         type: RecordType.ALIAS,
         target,
     };
-};
+}
 
-export const parseNAPTR = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseNAPTR(dnsRecord: DNSRecord): ParsedRecord {
     const parts = dnsRecord.rdata.trim().match(/(?:[^\s"]+|"[^"]*")+/g) || [];
 
     return {
@@ -570,9 +577,9 @@ export const parseNAPTR = (dnsRecord: DNSRecord): ParsedRecord => {
         regexp: parts[4] ? parts[4].replace(/"/g, "") : ".",
         replacement: parts[5] ? parts[5].replace(/"/g, "") : ".",
     };
-};
+}
 
-export const parseCERT = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseCERT(dnsRecord: DNSRecord): ParsedRecord {
     const parts = dnsRecord.rdata.trim().split(/\s+/);
 
     return {
@@ -583,9 +590,9 @@ export const parseCERT = (dnsRecord: DNSRecord): ParsedRecord => {
         algorithm: parts[2] ? Number(parts[2]) || 0 : 0,
         certificate: parts.slice(3).join(" ") || "",
     };
-};
+}
 
-export const parseSMIMEA = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseSMIMEA(dnsRecord: DNSRecord): ParsedRecord {
     const parts = dnsRecord.rdata.trim().split(/\s+/);
 
     return {
@@ -596,9 +603,9 @@ export const parseSMIMEA = (dnsRecord: DNSRecord): ParsedRecord => {
         matchingType: parts[2] ? Number(parts[2]) || 0 : 0,
         certAssociationData: parts[3] || "",
     };
-};
+}
 
-export const parseSVCB = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseSVCB(dnsRecord: DNSRecord): ParsedRecord {
     const parts = dnsRecord.rdata.trim().split(/\s+/);
 
     const priority = parts[0] ? Number(parts[0]) || 0 : 0;
@@ -612,9 +619,9 @@ export const parseSVCB = (dnsRecord: DNSRecord): ParsedRecord => {
         target,
         params,
     };
-};
+}
 
-export const parseURI = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseURI(dnsRecord: DNSRecord): ParsedRecord {
     const parts = dnsRecord.rdata.trim().match(/(?:[^\s"]+|"[^"]*")+/g) || [];
 
     return {
@@ -624,18 +631,18 @@ export const parseURI = (dnsRecord: DNSRecord): ParsedRecord => {
         weight: parts[1] ? Number(parts[1]) || 0 : 0,
         target: parts[2] ? parts[2].replace(/^"|"$/g, "") : "",
     };
-};
+}
 
-export const parseDNAME = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseDNAME(dnsRecord: DNSRecord): ParsedRecord {
     const target = dnsRecord.rdata.trim().replace(/^"|"$/g, "");
     return {
         ...dnsRecord,
         type: RecordType.DNAME,
         target,
     };
-};
+}
 
-export const parseHINFO = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseHINFO(dnsRecord: DNSRecord): ParsedRecord {
     const parts = dnsRecord.rdata.trim().match(/(?:[^\s"]+|"[^"]*")+/g) || [];
     const cpu = parts[0] ? parts[0].replace(/^"|"$/g, "") : "";
     const os = parts[1] ? parts[1].replace(/^"|"$/g, "") : "";
@@ -646,9 +653,9 @@ export const parseHINFO = (dnsRecord: DNSRecord): ParsedRecord => {
         cpu,
         os,
     };
-};
+}
 
-export const parseOPENPGPKEY = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseOPENPGPKEY(dnsRecord: DNSRecord): ParsedRecord {
     const publicKey = dnsRecord.rdata.trim().replace(/^"|"$/g, "");
 
     return {
@@ -656,9 +663,9 @@ export const parseOPENPGPKEY = (dnsRecord: DNSRecord): ParsedRecord => {
         type: RecordType.OPENPGPKEY,
         publicKey,
     };
-};
+}
 
-export const parseRP = (dnsRecord: DNSRecord): ParsedRecord => {
+export function parseRP(dnsRecord: DNSRecord): ParsedRecord {
     const parts = dnsRecord.rdata.trim().match(/(?:[^\s"]+|"[^"]*")+/g) || [];
     const mailbox = parts[0] ? parts[0].replace(/^"|"$/g, "") : "";
     const txtDomain = parts[1] ? parts[1].replace(/^"|"$/g, "") : "";
@@ -669,7 +676,7 @@ export const parseRP = (dnsRecord: DNSRecord): ParsedRecord => {
         mailbox,
         txtDomain,
     };
-};
+}
 
 export const recordParsers: Record<RecordType, (r: DNSRecord) => ParsedRecord> =
     {

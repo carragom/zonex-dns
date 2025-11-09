@@ -1,5 +1,10 @@
 import { extractRawRecords, sanitize } from "./utils/parser.helper.ts";
-import { RecordType, type ParsedRecord, type ParsedRecordByType, type ParseOptions } from "./utils/records.parser.ts";
+import {
+    type ParsedRecord,
+    type ParsedRecordByType,
+    type ParseOptions,
+    RecordType,
+} from "./utils/records.parser.ts";
 import * as parser from "./utils/records.parser.ts";
 
 /**

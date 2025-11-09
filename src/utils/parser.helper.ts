@@ -1,9 +1,13 @@
-import { type DNSRecord, type ParseOptions, RecordType } from "./records.parser.ts";
+import {
+    type DNSRecord,
+    type ParseOptions,
+    RecordType,
+} from "./records.parser.ts";
 
 export const DEFAULT_TTL = "3600";
-const dnsTypes = Object.keys(RecordType)
+const dnsTypes = Object.keys(RecordType);
 
-export const sanitize = (input: string): string[] => {
+export function sanitize(input: string): string[] {
     const records: string[] = [];
     let buffer = "";
 
@@ -35,9 +39,9 @@ export const sanitize = (input: string): string[] => {
     }
 
     return records.map((r) => r.replace(/\t/g, " "));
-};
+}
 
-const removeRecordComments = (line: string) => {
+function removeRecordComments(line: string): string {
     let record = "";
 
     let insideQuotes = false;
@@ -61,12 +65,12 @@ const removeRecordComments = (line: string) => {
     }
 
     return record;
-};
+}
 
-export const extractRawRecords = (
+export function extractRawRecords(
     rawRecords: string[],
     options?: ParseOptions,
-): { records: DNSRecord[]; origin: string; ttl: number } => {
+): { records: DNSRecord[]; origin: string; ttl: number } {
     const { preserveSpacing, keepTrailingDot } = {
         preserveSpacing: true,
         keepTrailingDot: true,
@@ -74,7 +78,6 @@ export const extractRawRecords = (
     };
 
     const parsedRecords: DNSRecord[] = [];
-    const VALID_CLASSES = ["IN", "CH", "CS", "HS"];
 
     let origin: string = "";
     let currentOrigin: string | undefined;
@@ -149,15 +152,6 @@ export const extractRawRecords = (
             const inheritOwnerName = tokens[tokens.length - 1] === "";
             const [first, second, third] = tokens.filter(Boolean);
 
-            const setDefaults = () => {
-                dnsRecord.ttl = originTTL ?? DEFAULT_TTL;
-                dnsRecord.class = "IN";
-                dnsRecord.name = currentOrigin ?? "@";
-            };
-
-            const isValidClass = (value: string | undefined) =>
-                value ? VALID_CLASSES.includes(value.toUpperCase()) : false;
-
             const assignRecord = (
                 ttl: string | undefined,
                 recordClass: string | undefined,
@@ -169,7 +163,9 @@ export const extractRawRecords = (
             };
 
             if (!first && !second && !third) {
-                setDefaults();
+                dnsRecord.ttl = originTTL ?? DEFAULT_TTL;
+                dnsRecord.class = "IN";
+                dnsRecord.name = currentOrigin ?? "@";
             } else if (first && !second && !third) {
                 if (isValidClass(first)) {
                     assignRecord(
@@ -257,9 +253,9 @@ export const extractRawRecords = (
     }
 
     return { records: parsedRecords, origin, ttl: normalizeTtl(originTTL) };
-};
+}
 
-export const normalizeTtl = (ttl: string | number | undefined): number => {
+export function normalizeTtl(ttl: string | number | undefined): number {
     if (!ttl) return parseInt(DEFAULT_TTL);
 
     if (typeof ttl === "number") return ttl;
@@ -283,14 +279,20 @@ export const normalizeTtl = (ttl: string | number | undefined): number => {
     if (!units[unit] || isNaN(numPart)) return parseInt(DEFAULT_TTL);
 
     return numPart * units[unit];
-};
+}
 
-export const toFqdn = (
+export function toFqdn(
     name: string,
     origin: string,
     keepTrailingDot?: boolean,
-) => {
+): string {
     const fqdn = name.endsWith(".") ? name : name + "." + origin;
 
     return keepTrailingDot ? fqdn : fqdn.slice(0, -1);
-};
+}
+
+function isValidClass(value: string | undefined) {
+    return value
+        ? ["IN", "CH", "CS", "HS"].includes(value.toUpperCase())
+        : false;
+}

@@ -67,10 +67,10 @@ export const CanonicalFieldOrder: Record<string, string[]> = {
     ],
 };
 
-export const prepareRecord = (
+export function prepareRecord(
     record: InputRecord,
     options?: GenerateOptions,
-): DNSRecord => {
+): DNSRecord {
     const { fieldMap } = options ?? {};
 
     return {
@@ -80,12 +80,12 @@ export const prepareRecord = (
         type: record.type,
         rdata: buildRdata(record, fieldMap?.[record.type]),
     };
-};
+}
 
-export const buildRdata = (
+export function buildRdata(
     record: InputRecord,
     fieldMap?: Record<string, string>,
-): string => {
+): string {
     const keyOrder = CanonicalFieldOrder[record.type];
 
     if (!keyOrder) return "";
@@ -114,12 +114,12 @@ export const buildRdata = (
     });
 
     return formatRdataValues(record.type, values);
-};
+}
 
-export const formatRdataValues = (
+export function formatRdataValues(
     type: string,
     values: (string | number | undefined)[],
-): string => {
+): string {
     const formatters: Record<
         string,
         (v: (string | number | undefined)[]) => string
@@ -132,4 +132,4 @@ export const formatRdataValues = (
     };
 
     return (formatters[type] ?? ((v) => v.filter(Boolean).join(" ")))(values);
-};
+}
