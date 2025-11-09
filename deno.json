@@ -1,6 +1,6 @@
 {
     "name": "@carragom/zonex",
-    "version": "1.1.0-alpha.1",
+    "version": "1.1.0-alpha.2",
     "exports": "./src/index.ts",
     "license": "MIT",
     "lock": false,
