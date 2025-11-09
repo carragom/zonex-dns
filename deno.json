@@ -1,43 +1,48 @@
 {
-    "name": "@carragom/zonex",
-    "version": "1.1.0-alpha.4",
-    "exports": "./src/mod.ts",
-    "license": "MIT",
-    "lock": false,
-    "exclude": [
-        "./dist"
-    ],
-    "fmt": {
-        "indentWidth": 4
-    },
-    "test": {
-        "include": ["./src"],
-        "permissions": {
-            "read": true
-        }
-    },
-    "tasks": {
-        "build": {
-            "description": "Builds the project in both ES Module and CommonJS formats",
-            "dependencies": ["build:esm", "build:cjs"]
-        },
-        "build:esm": {
-            "description": "Builds the project in ES Module format",
-            "command": "deno run -A npm:typescript/tsc src/mod.ts --declaration --rewriteRelativeImportExtensions --target es2022 --module es2022 --outDir ./dist/esm",
-            "dependencies": ["check", "fmt", "lint"]
-        },
-        "build:cjs": {
-            "description": "Builds the project in CommonJS format",
-            "command": "deno run -A npm:typescript/tsc src/mod.ts --declaration --rewriteRelativeImportExtensions --target es2022 --module commonjs --outDir ./dist/cjs",
-            "dependencies": ["check", "fmt", "lint"]
-        },
-        "check": "deno check",
-        "clean": "rm -rf dist",
-        "fmt": "deno fmt --check",
-        "lint": "deno lint",
-        "test": "deno test -P"
-    },
-    "imports": {
-        "@std/assert": "jsr:@std/assert@1"
-    }
+	"name": "@carragom/zonex",
+	"version": "1.1.0-alpha.4",
+	"exports": "./src/mod.ts",
+	"license": "MIT",
+	"lock": false,
+	"exclude": [
+		"./dist"
+	],
+	"fmt": {
+		"useBraces": "whenNotSingleLine",
+		"bracePosition": "sameLineUnlessHanging",
+		"semiColons": false,
+		"singleQuote": true,
+		"useTabs": true,
+		"indentWidth": 3
+	},
+	"test": {
+		"include": ["./src"],
+		"permissions": {
+			"read": true
+		}
+	},
+	"tasks": {
+		"build": {
+			"description": "Builds the project in both ES Module and CommonJS formats",
+			"dependencies": ["build:esm", "build:cjs"]
+		},
+		"build:esm": {
+			"description": "Builds the project in ES Module format",
+			"command": "deno run -A npm:typescript/tsc src/mod.ts --declaration --rewriteRelativeImportExtensions --target es2022 --module es2022 --outDir ./dist/esm",
+			"dependencies": ["check", "fmt", "lint"]
+		},
+		"build:cjs": {
+			"description": "Builds the project in CommonJS format",
+			"command": "deno run -A npm:typescript/tsc src/mod.ts --declaration --rewriteRelativeImportExtensions --target es2022 --module commonjs --outDir ./dist/cjs",
+			"dependencies": ["check", "fmt", "lint"]
+		},
+		"check": "deno check",
+		"clean": "rm -rf dist",
+		"fmt": "deno fmt --check",
+		"lint": "deno lint",
+		"test": "deno test -P"
+	},
+	"imports": {
+		"@std/assert": "jsr:@std/assert@1"
+	}
 }

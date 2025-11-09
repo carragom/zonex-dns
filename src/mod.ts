@@ -206,13 +206,13 @@
  * @license MIT
  */
 
-export { generate } from "./generator.ts";
-export { parse } from "./parser.ts";
-export { RecordType } from "./utils/records.parser.ts";
+export { generate } from './generator.ts'
+export { parse } from './parser.ts'
+export { RecordType } from './utils/records.parser.ts'
 
-export type { GenerateOptions, InputRecord } from "./generator.ts";
+export type { GenerateOptions, InputRecord } from './generator.ts'
 export type {
-    ParsedRecord,
-    ParsedRecordByType,
-    ParseOptions,
-} from "./utils/records.parser.ts";
+	ParsedRecord,
+	ParsedRecordByType,
+	ParseOptions,
+} from './utils/records.parser.ts'

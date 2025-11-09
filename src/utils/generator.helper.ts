@@ -1,135 +1,135 @@
-import type { GenerateOptions, InputRecord } from "../generator.ts";
-import { normalizeTtl } from "./parser.helper.ts";
-import type { DNSRecord } from "./records.parser.ts";
+import type { GenerateOptions, InputRecord } from '../generator.ts'
+import { normalizeTtl } from './parser.helper.ts'
+import type { DNSRecord } from './records.parser.ts'
 
 export const CanonicalFieldOrder: Record<string, string[]> = {
-    A: ["address"],
-    AAAA: ["address"],
+	A: ['address'],
+	AAAA: ['address'],
 
-    CNAME: ["target"],
-    DNAME: ["target"],
-    NS: ["host"],
-    PTR: ["ptrdname"],
-    ALIAS: ["target"],
+	CNAME: ['target'],
+	DNAME: ['target'],
+	NS: ['host'],
+	PTR: ['ptrdname'],
+	ALIAS: ['target'],
 
-    MX: ["priority", "exchange"],
+	MX: ['priority', 'exchange'],
 
-    TXT: ["text"],
-    SPF: ["text"],
+	TXT: ['text'],
+	SPF: ['text'],
 
-    HINFO: ["cpu", "os"],
-    SOA: ["mname", "rname", "serial", "refresh", "retry", "expire", "minimum"],
+	HINFO: ['cpu', 'os'],
+	SOA: ['mname', 'rname', 'serial', 'refresh', 'retry', 'expire', 'minimum'],
 
-    SRV: ["priority", "weight", "port", "target"],
-    NAPTR: ["order", "preference", "flags", "service", "regexp", "replacement"],
+	SRV: ['priority', 'weight', 'port', 'target'],
+	NAPTR: ['order', 'preference', 'flags', 'service', 'regexp', 'replacement'],
 
-    CAA: ["flag", "tag", "value"],
+	CAA: ['flag', 'tag', 'value'],
 
-    LOC: [
-        "latitude.degrees",
-        "latitude.minutes",
-        "latitude.seconds",
-        "latitude.hemisphere",
-        "longitude.degrees",
-        "longitude.minutes",
-        "longitude.seconds",
-        "longitude.hemisphere",
-        "altitude",
-        "size",
-        "horizPrecision",
-        "vertPrecision",
-    ],
+	LOC: [
+		'latitude.degrees',
+		'latitude.minutes',
+		'latitude.seconds',
+		'latitude.hemisphere',
+		'longitude.degrees',
+		'longitude.minutes',
+		'longitude.seconds',
+		'longitude.hemisphere',
+		'altitude',
+		'size',
+		'horizPrecision',
+		'vertPrecision',
+	],
 
-    DS: ["keyTag", "algorithm", "digestType", "digest"],
-    DNSKEY: ["flags", "protocol", "algorithm", "publicKey"],
+	DS: ['keyTag', 'algorithm', 'digestType', 'digest'],
+	DNSKEY: ['flags', 'protocol', 'algorithm', 'publicKey'],
 
-    TLSA: ["usage", "selector", "matchingType", "certificateAssociationData"],
-    SMIMEA: ["usage", "selector", "matchingType", "certAssociationData"],
+	TLSA: ['usage', 'selector', 'matchingType', 'certificateAssociationData'],
+	SMIMEA: ['usage', 'selector', 'matchingType', 'certAssociationData'],
 
-    SSHFP: ["algorithm", "fingerprintType", "fingerprint"],
+	SSHFP: ['algorithm', 'fingerprintType', 'fingerprint'],
 
-    CERT: ["certType", "keyTag", "algorithm", "certificate"],
+	CERT: ['certType', 'keyTag', 'algorithm', 'certificate'],
 
-    OPENPGPKEY: ["publicKey"],
-    RP: ["mailbox", "txtDomain"],
+	OPENPGPKEY: ['publicKey'],
+	RP: ['mailbox', 'txtDomain'],
 
-    HTTPS: ["priority", "target", "params"],
-    SVCB: ["priority", "target", "params"],
+	HTTPS: ['priority', 'target', 'params'],
+	SVCB: ['priority', 'target', 'params'],
 
-    URI: ["priority", "weight", "target"],
+	URI: ['priority', 'weight', 'target'],
 
-    IPSECKEY: [
-        "precedence",
-        "gatewayType",
-        "algorithm",
-        "gateway",
-        "publicKey",
-    ],
-};
+	IPSECKEY: [
+		'precedence',
+		'gatewayType',
+		'algorithm',
+		'gateway',
+		'publicKey',
+	],
+}
 
 export function prepareRecord(
-    record: InputRecord,
-    options?: GenerateOptions,
+	record: InputRecord,
+	options?: GenerateOptions,
 ): DNSRecord {
-    const { fieldMap } = options ?? {};
+	const { fieldMap } = options ?? {}
 
-    return {
-        name: record.name,
-        ttl: normalizeTtl(record.ttl ?? options?.ttl),
-        class: record.class ?? "IN",
-        type: record.type,
-        rdata: buildRdata(record, fieldMap?.[record.type]),
-    };
+	return {
+		name: record.name,
+		ttl: normalizeTtl(record.ttl ?? options?.ttl),
+		class: record.class ?? 'IN',
+		type: record.type,
+		rdata: buildRdata(record, fieldMap?.[record.type]),
+	}
 }
 
 export function buildRdata(
-    record: InputRecord,
-    fieldMap?: Record<string, string>,
+	record: InputRecord,
+	fieldMap?: Record<string, string>,
 ): string {
-    const keyOrder = CanonicalFieldOrder[record.type];
+	const keyOrder = CanonicalFieldOrder[record.type]
 
-    if (!keyOrder) return "";
+	if (!keyOrder) return ''
 
-    const values = keyOrder.map((canonicalKey) => {
-        const inputKey = fieldMap?.[canonicalKey] ?? canonicalKey;
+	const values = keyOrder.map((canonicalKey) => {
+		const inputKey = fieldMap?.[canonicalKey] ?? canonicalKey
 
-        // deno-lint-ignore no-explicit-any
-        if (!inputKey.includes(".")) return (record as any)[inputKey];
+		// deno-lint-ignore no-explicit-any
+		if (!inputKey.includes('.')) return (record as any)[inputKey]
 
-        const keyParts = inputKey.split(".").map((p) => p.trim()).filter(
-            Boolean,
-        ) as string[];
+		const keyParts = inputKey.split('.').map((p) => p.trim()).filter(
+			Boolean,
+		) as string[]
 
-        let keyValue = "";
-        // deno-lint-ignore no-explicit-any
-        let keyData: any = record;
+		let keyValue = ''
+		// deno-lint-ignore no-explicit-any
+		let keyData: any = record
 
-        for (const key of keyParts) {
-            keyData = keyData?.[key] ?? "";
-        }
+		for (const key of keyParts) {
+			keyData = keyData?.[key] ?? ''
+		}
 
-        keyValue += keyData + " ";
+		keyValue += keyData + ' '
 
-        return keyValue.trim();
-    });
+		return keyValue.trim()
+	})
 
-    return formatRdataValues(record.type, values);
+	return formatRdataValues(record.type, values)
 }
 
 export function formatRdataValues(
-    type: string,
-    values: (string | number | undefined)[],
+	type: string,
+	values: (string | number | undefined)[],
 ): string {
-    const formatters: Record<
-        string,
-        (v: (string | number | undefined)[]) => string
-    > = {
-        TXT: (v) => v.filter(Boolean).map((t) => `"${t}"`).join(" "),
-        HINFO: (v) => v.filter(Boolean).map((t) => `"${t}"`).join(" "),
-        NAPTR: (v) =>
-            [v[0], v[1], `"${v[2]}"`, `"${v[3]}"`, `"${v[4]}"`, v[5]].join(" "),
-        CAA: (v) => [v[0], v[1], `"${v[2]}"`].join(" "),
-    };
+	const formatters: Record<
+		string,
+		(v: (string | number | undefined)[]) => string
+	> = {
+		TXT: (v) => v.filter(Boolean).map((t) => `"${t}"`).join(' '),
+		HINFO: (v) => v.filter(Boolean).map((t) => `"${t}"`).join(' '),
+		NAPTR: (v) =>
+			[v[0], v[1], `"${v[2]}"`, `"${v[3]}"`, `"${v[4]}"`, v[5]].join(' '),
+		CAA: (v) => [v[0], v[1], `"${v[2]}"`].join(' '),
+	}
 
-    return (formatters[type] ?? ((v) => v.filter(Boolean).join(" ")))(values);
+	return (formatters[type] ?? ((v) => v.filter(Boolean).join(' ')))(values)
 }

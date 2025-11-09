@@ -1,9 +1,9 @@
-import { prepareRecord } from "./utils/generator.helper.ts";
+import { prepareRecord } from './utils/generator.helper.ts'
 import type {
-    DMS,
-    DNSRecordsByType,
-    RecordType,
-} from "./utils/records.parser.ts";
+	DMS,
+	DNSRecordsByType,
+	RecordType,
+} from './utils/records.parser.ts'
 
 /**
  * Generates a BIND-style DNS zone file string from input records.
@@ -31,21 +31,21 @@ import type {
  */
 
 export function generate(
-    records: InputRecord[],
-    options?: GenerateOptions,
+	records: InputRecord[],
+	options?: GenerateOptions,
 ): string {
-    const { keepComments = true, keepHeaders = true, origin = "", ttl = 3600 } =
-        options || {};
+	const { keepComments = true, keepHeaders = true, origin = '', ttl = 3600 } =
+		options || {}
 
-    const dnsRecords = records.map((record) => prepareRecord(record, options));
+	const dnsRecords = records.map((record) => prepareRecord(record, options))
 
-    const groupedRecords = dnsRecords.reduce((acc, rec) => {
-        if (!acc[rec.type]) acc[rec.type] = [];
-        acc[rec.type].push(rec);
-        return acc;
-    }, {} as DNSRecordsByType);
+	const groupedRecords = dnsRecords.reduce((acc, rec) => {
+		if (!acc[rec.type]) acc[rec.type] = []
+		acc[rec.type].push(rec)
+		return acc
+	}, {} as DNSRecordsByType)
 
-    return toZoneFile(groupedRecords, origin, ttl, keepComments, keepHeaders);
+	return toZoneFile(groupedRecords, origin, ttl, keepComments, keepHeaders)
 }
 
 /**
@@ -61,93 +61,93 @@ export function generate(
  */
 
 function toZoneFile(
-    dnsRecords: DNSRecordsByType,
-    origin: string,
-    ttl: number,
-    keepComments: boolean = true,
-    keepHeaders: boolean = true,
+	dnsRecords: DNSRecordsByType,
+	origin: string,
+	ttl: number,
+	keepComments: boolean = true,
+	keepHeaders: boolean = true,
 ): string {
-    const zoneEntries = Object.entries(dnsRecords);
-    let zoneFileContent = "";
+	const zoneEntries = Object.entries(dnsRecords)
+	let zoneFileContent = ''
 
-    // Ensure origin ends with a dot
-    if (!origin) {
-        origin = zoneEntries[0]?.[1]?.[0]?.name ?? "";
-    }
-    origin = origin.endsWith(".") ? origin : origin + ".";
+	// Ensure origin ends with a dot
+	if (!origin) {
+		origin = zoneEntries[0]?.[1]?.[0]?.name ?? ''
+	}
+	origin = origin.endsWith('.') ? origin : origin + '.'
 
-    // Default TTL from first record if not provided
-    if (!ttl) {
-        ttl = zoneEntries[0]?.[1]?.[0]?.ttl ?? 3600;
-    }
+	// Default TTL from first record if not provided
+	if (!ttl) {
+		ttl = zoneEntries[0]?.[1]?.[0]?.ttl ?? 3600
+	}
 
-    // Add headers if requested
-    if (keepHeaders) {
-        zoneFileContent += `;;\n` +
-            `;; Domain:     ${origin}\n` +
-            `;; Exported:   ${new Date().toISOString()}\n` +
-            `;;\n` +
-            `;; Generated using: ZoneX\n` +
-            `;; NPM Package: https://github.com/thedeepakcodes/zonex-dns.git\n` +
-            `;; \n` +
-            `;; ==================================================\n` +
-            `;;\n` +
-            `;; This file is intended for informational and archival\n` +
-            `;; purposes ONLY and MUST be reviewed and edited before use\n` +
-            `;; on a production DNS server.\n` +
-            `;;\n` +
-            `;; For further information, please consult the BIND documentation:\n` +
-            `;;   https://www.isc.org/bind/\n` +
-            `;;\n` +
-            `;; And RFC 1035:\n` +
-            `;;   https://www.rfc-editor.org/rfc/rfc1035.txt\n` +
-            `;;\n` +
-            `;; Disclaimer:\n` +
-            `;;   We do NOT provide support for any use of this zone data,\n` +
-            `;;   the BIND name server, or any other third-party DNS software.\n` +
-            `;;\n` +
-            `;; Use at your own risk.\n` +
-            `;;\n` +
-            `;; ==================================================\n`;
-    }
+	// Add headers if requested
+	if (keepHeaders) {
+		zoneFileContent += `;;\n` +
+			`;; Domain:     ${origin}\n` +
+			`;; Exported:   ${new Date().toISOString()}\n` +
+			`;;\n` +
+			`;; Generated using: ZoneX\n` +
+			`;; NPM Package: https://github.com/thedeepakcodes/zonex-dns.git\n` +
+			`;; \n` +
+			`;; ==================================================\n` +
+			`;;\n` +
+			`;; This file is intended for informational and archival\n` +
+			`;; purposes ONLY and MUST be reviewed and edited before use\n` +
+			`;; on a production DNS server.\n` +
+			`;;\n` +
+			`;; For further information, please consult the BIND documentation:\n` +
+			`;;   https://www.isc.org/bind/\n` +
+			`;;\n` +
+			`;; And RFC 1035:\n` +
+			`;;   https://www.rfc-editor.org/rfc/rfc1035.txt\n` +
+			`;;\n` +
+			`;; Disclaimer:\n` +
+			`;;   We do NOT provide support for any use of this zone data,\n` +
+			`;;   the BIND name server, or any other third-party DNS software.\n` +
+			`;;\n` +
+			`;; Use at your own risk.\n` +
+			`;;\n` +
+			`;; ==================================================\n`
+	}
 
-    // Add $ORIGIN and $TTL directives
-    if (origin) zoneFileContent += `\n$ORIGIN ${origin}`;
-    if (ttl) zoneFileContent += `\n$TTL ${ttl}\n`;
+	// Add $ORIGIN and $TTL directives
+	if (origin) zoneFileContent += `\n$ORIGIN ${origin}`
+	if (ttl) zoneFileContent += `\n$TTL ${ttl}\n`
 
-    // Process each record type
-    for (const [type, records] of zoneEntries) {
-        if (keepComments) {
-            zoneFileContent += `\n;; ${type} records\n`;
-        } else {
-            zoneFileContent += `\n`;
-        }
+	// Process each record type
+	for (const [type, records] of zoneEntries) {
+		if (keepComments) {
+			zoneFileContent += `\n;; ${type} records\n`
+		} else {
+			zoneFileContent += `\n`
+		}
 
-        const recordLines = records.map(
-            (record) =>
-                `${record.name}\t${record.ttl}\t${record.class}\t${record.type}\t${record.rdata}`,
-        );
-        zoneFileContent += recordLines.join("\n") + "\n";
-    }
+		const recordLines = records.map(
+			(record) =>
+				`${record.name}\t${record.ttl}\t${record.class}\t${record.type}\t${record.rdata}`,
+		)
+		zoneFileContent += recordLines.join('\n') + '\n'
+	}
 
-    return zoneFileContent;
+	return zoneFileContent
 }
 
 /** Options for {@linkcode generate}. */
 export interface GenerateOptions {
-    origin?: string;
-    ttl?: number;
-    fieldMap?: {
-        [rrType: string]: Record<string, string>;
-    };
-    keepComments?: boolean;
-    keepHeaders?: boolean;
+	origin?: string
+	ttl?: number
+	fieldMap?: {
+		[rrType: string]: Record<string, string>
+	}
+	keepComments?: boolean
+	keepHeaders?: boolean
 }
 
 export interface InputRecord {
-    name: string;
-    type: keyof typeof RecordType;
-    ttl?: number;
-    class?: string;
-    [key: string]: string | number | undefined | DMS;
+	name: string
+	type: keyof typeof RecordType
+	ttl?: number
+	class?: string
+	[key: string]: string | number | undefined | DMS
 }
