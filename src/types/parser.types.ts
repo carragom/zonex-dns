@@ -31,7 +31,7 @@ export enum RecordType {
 
 export interface DNSRecord {
     name: string;
-    type: RecordType;
+    type: keyof typeof RecordType;
     ttl: number;
     class: string;
     rdata: string;

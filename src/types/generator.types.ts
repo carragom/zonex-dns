@@ -12,7 +12,8 @@ export interface GenerateOptions {
 
 export interface InputRecord {
     name: string;
-    type: RecordType;
+    type: keyof typeof RecordType;
     ttl?: number;
     class?: string;
+    [key: string]: string | number | undefined;
 }
