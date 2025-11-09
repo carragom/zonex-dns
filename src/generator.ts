@@ -7,9 +7,9 @@ import { prepareRecord } from "./utils/generator.helper.ts";
  *
  * @param {InputRecord[]} records - The input DNS records to be converted.
  * @param {GenerateOptions} [options] - Optional settings for zone file generation.
- * 
+ *
  * @returns {string} A BIND-style zone file string.
- * 
+ *
  * @example
  * ```ts
  * const fieldMap = {
@@ -25,11 +25,14 @@ import { prepareRecord } from "./utils/generator.helper.ts";
  *
  * const records = generate(input, { fieldMap });
  * ```
- * 
  */
 
-export const generate = (records: InputRecord[], options?: GenerateOptions): string => {
-    const { keepComments = true, keepHeaders = true, origin = "", ttl = 3600 } = options || {};
+export const generate = (
+    records: InputRecord[],
+    options?: GenerateOptions,
+): string => {
+    const { keepComments = true, keepHeaders = true, origin = "", ttl = 3600 } =
+        options || {};
 
     const dnsRecords = records.map((record) => prepareRecord(record, options));
 
@@ -54,7 +57,13 @@ export const generate = (records: InputRecord[], options?: GenerateOptions): str
  * @returns {string} A BIND-style zone file string.
  */
 
-export const toZoneFile = (dnsRecords: DNSRecordsByType, origin: string, ttl: number, keepComments: boolean = true, keepHeaders: boolean = true): string => {
+export const toZoneFile = (
+    dnsRecords: DNSRecordsByType,
+    origin: string,
+    ttl: number,
+    keepComments: boolean = true,
+    keepHeaders: boolean = true,
+): string => {
     const zoneEntries = Object.entries(dnsRecords);
     let zoneFileContent = "";
 
@@ -112,7 +121,8 @@ export const toZoneFile = (dnsRecords: DNSRecordsByType, origin: string, ttl: nu
         }
 
         const recordLines = records.map(
-            (record) => `${record.name}\t${record.ttl}\t${record.class}\t${record.type}\t${record.rdata}`
+            (record) =>
+                `${record.name}\t${record.ttl}\t${record.class}\t${record.type}\t${record.rdata}`,
         );
         zoneFileContent += recordLines.join("\n") + "\n";
     }

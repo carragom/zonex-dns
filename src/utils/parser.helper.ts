@@ -1,4 +1,8 @@
-import type { DNSRecord, ParseOptions, RecordType } from "../types/parser.types.ts";
+import type {
+    DNSRecord,
+    ParseOptions,
+    RecordType,
+} from "../types/parser.types.ts";
 
 export const DEFAULT_TTL = "3600";
 export const DnsTypes = [
@@ -29,7 +33,7 @@ export const DnsTypes = [
     "DNAME",
     "HINFO",
     "OPENPGPKEY",
-    "RP"
+    "RP",
 ];
 
 export const sanitize = (input: string): string[] => {
@@ -39,10 +43,9 @@ export const sanitize = (input: string): string[] => {
     const lines = input.split(/\r?\n/);
 
     for (let line of lines) {
-
         if (!line || line.startsWith(";")) continue;
 
-        line = removeRecordComments(line)
+        line = removeRecordComments(line);
 
         if (line.includes("(") && !line.includes(")")) {
             buffer += line.replace("(", "").trim() + " ";
@@ -64,7 +67,7 @@ export const sanitize = (input: string): string[] => {
         records.push(line);
     }
 
-    return records.map(r => r.replace(/\t/g, " "));
+    return records.map((r) => r.replace(/\t/g, " "));
 };
 
 const removeRecordComments = (line: string) => {
@@ -91,9 +94,12 @@ const removeRecordComments = (line: string) => {
     }
 
     return record;
-}
+};
 
-export const extractRawRecords = (rawRecords: string[], options?: ParseOptions): { records: DNSRecord[], origin: string, ttl: number } => {
+export const extractRawRecords = (
+    rawRecords: string[],
+    options?: ParseOptions,
+): { records: DNSRecord[]; origin: string; ttl: number } => {
     const { preserveSpacing, keepTrailingDot } = {
         preserveSpacing: true,
         keepTrailingDot: true,
@@ -127,7 +133,7 @@ export const extractRawRecords = (rawRecords: string[], options?: ParseOptions):
             ttl: "",
             class: "",
             type: "",
-            rdata: ""
+            rdata: "",
         };
 
         let insideQuotes = false;
@@ -156,16 +162,18 @@ export const extractRawRecords = (rawRecords: string[], options?: ParseOptions):
 
         reconstructed += " ";
 
-        const typeRegex = new RegExp(`(?:\\s|^)(${DnsTypes.join("|")})(?=\\s)`, "gmi");
+        const typeRegex = new RegExp(
+            `(?:\\s|^)(${DnsTypes.join("|")})(?=\\s)`,
+            "gmi",
+        );
         const recordType = reconstructed.match(typeRegex)?.pop() ?? "";
         const typeIndex = reconstructed.lastIndexOf(recordType);
 
         const parts = [
             rawRecord.slice(0, typeIndex),
             recordType,
-            rawRecord.slice(typeIndex + recordType.length).trim()
+            rawRecord.slice(typeIndex + recordType.length).trim(),
         ];
-
 
         if (parts.length === 3) {
             dnsRecord.rdata = parts.pop()?.trim() ?? "";
@@ -186,7 +194,7 @@ export const extractRawRecords = (rawRecords: string[], options?: ParseOptions):
             const assignRecord = (
                 ttl: string | undefined,
                 recordClass: string | undefined,
-                name: string | undefined
+                name: string | undefined,
             ) => {
                 dnsRecord.ttl = ttl ?? originTTL ?? DEFAULT_TTL;
                 dnsRecord.class = recordClass ?? "IN";
@@ -197,15 +205,31 @@ export const extractRawRecords = (rawRecords: string[], options?: ParseOptions):
                 setDefaults();
             } else if (first && !second && !third) {
                 if (isValidClass(first)) {
-                    assignRecord(originTTL, inheritOwnerName ? first : "IN", inheritOwnerName ? currentOrigin : first);
+                    assignRecord(
+                        originTTL,
+                        inheritOwnerName ? first : "IN",
+                        inheritOwnerName ? currentOrigin : first,
+                    );
                 } else {
-                    assignRecord(inheritOwnerName ? first : originTTL, "IN", inheritOwnerName ? currentOrigin : first);
+                    assignRecord(
+                        inheritOwnerName ? first : originTTL,
+                        "IN",
+                        inheritOwnerName ? currentOrigin : first,
+                    );
                 }
             } else if (first && second && !third) {
                 if (isValidClass(first)) {
-                    assignRecord(inheritOwnerName ? second : originTTL, first, inheritOwnerName ? currentOrigin : second);
+                    assignRecord(
+                        inheritOwnerName ? second : originTTL,
+                        first,
+                        inheritOwnerName ? currentOrigin : second,
+                    );
                 } else {
-                    assignRecord(first, inheritOwnerName ? second : "IN", inheritOwnerName ? currentOrigin : second);
+                    assignRecord(
+                        first,
+                        inheritOwnerName ? second : "IN",
+                        inheritOwnerName ? currentOrigin : second,
+                    );
                 }
             } else if (first && second && third) {
                 if (isValidClass(first)) {
@@ -234,7 +258,11 @@ export const extractRawRecords = (rawRecords: string[], options?: ParseOptions):
             // cname records can have relative domains
             if (dnsRecord.type === "CNAME") {
                 dnsRecord.rdata = dnsRecord.rdata.replace("@", origin ?? "");
-                dnsRecord.rdata = toFqdn(dnsRecord.rdata, origin ?? "", keepTrailingDot);
+                dnsRecord.rdata = toFqdn(
+                    dnsRecord.rdata,
+                    origin ?? "",
+                    keepTrailingDot,
+                );
             }
 
             // remove spaces from non-TXT records
@@ -247,7 +275,9 @@ export const extractRawRecords = (rawRecords: string[], options?: ParseOptions):
                 const matches = dnsRecord.rdata.match(/"((?:[^"\\]|\\.)*)"/g);
                 const joinBy = preserveSpacing ? " " : "";
 
-                dnsRecord.rdata = matches?.map(s => s.slice(1, -1)).join(joinBy) ?? '';
+                dnsRecord.rdata = matches?.map((s) =>
+                    s.slice(1, -1)
+                ).join(joinBy) ?? "";
             }
 
             parsedRecords.push({
@@ -261,7 +291,6 @@ export const extractRawRecords = (rawRecords: string[], options?: ParseOptions):
 
     return { records: parsedRecords, origin, ttl: normalizeTtl(originTTL) };
 };
-
 
 export const normalizeTtl = (ttl: string | number | undefined): number => {
     if (!ttl) return parseInt(DEFAULT_TTL);
@@ -289,10 +318,12 @@ export const normalizeTtl = (ttl: string | number | undefined): number => {
     return numPart * units[unit];
 };
 
-export const toFqdn = (name: string, origin: string, keepTrailingDot?: boolean) => {
-    const fqdn = name.endsWith(".")
-        ? name
-        : name + "." + origin;
+export const toFqdn = (
+    name: string,
+    origin: string,
+    keepTrailingDot?: boolean,
+) => {
+    const fqdn = name.endsWith(".") ? name : name + "." + origin;
 
     return keepTrailingDot ? fqdn : fqdn.slice(0, -1);
 };

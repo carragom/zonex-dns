@@ -11,8 +11,8 @@ export interface GenerateOptions {
 }
 
 export interface InputRecord {
-    name: string
-    type: RecordType
-    ttl?: number
-    class?: string
+    name: string;
+    type: RecordType;
+    ttl?: number;
+    class?: string;
 }

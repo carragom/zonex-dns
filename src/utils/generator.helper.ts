@@ -25,7 +25,20 @@ export const CanonicalFieldOrder: Record<string, string[]> = {
 
     CAA: ["flag", "tag", "value"],
 
-    LOC: ["latitude.degrees", "latitude.minutes", "latitude.seconds", "latitude.hemisphere", "longitude.degrees", "longitude.minutes", "longitude.seconds", "longitude.hemisphere", "altitude", "size", "horizPrecision", "vertPrecision"],
+    LOC: [
+        "latitude.degrees",
+        "latitude.minutes",
+        "latitude.seconds",
+        "latitude.hemisphere",
+        "longitude.degrees",
+        "longitude.minutes",
+        "longitude.seconds",
+        "longitude.hemisphere",
+        "altitude",
+        "size",
+        "horizPrecision",
+        "vertPrecision",
+    ],
 
     DS: ["keyTag", "algorithm", "digestType", "digest"],
     DNSKEY: ["flags", "protocol", "algorithm", "publicKey"],
@@ -45,10 +58,19 @@ export const CanonicalFieldOrder: Record<string, string[]> = {
 
     URI: ["priority", "weight", "target"],
 
-    IPSECKEY: ["precedence", "gatewayType", "algorithm", "gateway", "publicKey"],
+    IPSECKEY: [
+        "precedence",
+        "gatewayType",
+        "algorithm",
+        "gateway",
+        "publicKey",
+    ],
 };
 
-export const prepareRecord = (record: InputRecord, options?: GenerateOptions): DNSRecord => {
+export const prepareRecord = (
+    record: InputRecord,
+    options?: GenerateOptions,
+): DNSRecord => {
     const { fieldMap } = options ?? {};
 
     return {
@@ -60,7 +82,10 @@ export const prepareRecord = (record: InputRecord, options?: GenerateOptions): D
     };
 };
 
-export const buildRdata = (record: InputRecord, fieldMap?: Record<string, string>): string => {
+export const buildRdata = (
+    record: InputRecord,
+    fieldMap?: Record<string, string>,
+): string => {
     const keyOrder = CanonicalFieldOrder[record.type];
 
     if (!keyOrder) return "";
@@ -71,7 +96,9 @@ export const buildRdata = (record: InputRecord, fieldMap?: Record<string, string
         // deno-lint-ignore no-explicit-any
         if (!inputKey.includes(".")) return (record as any)[inputKey];
 
-        const keyParts = inputKey.split(".").map((p) => p.trim()).filter(Boolean) as string[];
+        const keyParts = inputKey.split(".").map((p) => p.trim()).filter(
+            Boolean,
+        ) as string[];
 
         let keyValue = "";
         // deno-lint-ignore no-explicit-any
@@ -89,12 +116,19 @@ export const buildRdata = (record: InputRecord, fieldMap?: Record<string, string
     return formatRdataValues(record.type, values);
 };
 
-export const formatRdataValues = (type: string, values: (string | number | undefined)[]): string => {
-    const formatters: Record<string, (v: (string | number | undefined)[]) => string> = {
+export const formatRdataValues = (
+    type: string,
+    values: (string | number | undefined)[],
+): string => {
+    const formatters: Record<
+        string,
+        (v: (string | number | undefined)[]) => string
+    > = {
         TXT: (v) => v.filter(Boolean).map((t) => `"${t}"`).join(" "),
         HINFO: (v) => v.filter(Boolean).map((t) => `"${t}"`).join(" "),
-        NAPTR: (v) => [v[0], v[1], `"${v[2]}"`, `"${v[3]}"`, `"${v[4]}"`, v[5]].join(" "),
-        CAA: (v) => [v[0], v[1], `"${v[2]}"`].join(" ")
+        NAPTR: (v) =>
+            [v[0], v[1], `"${v[2]}"`, `"${v[3]}"`, `"${v[4]}"`, v[5]].join(" "),
+        CAA: (v) => [v[0], v[1], `"${v[2]}"`].join(" "),
     };
 
     return (formatters[type] ?? ((v) => v.filter(Boolean).join(" ")))(values);

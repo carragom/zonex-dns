@@ -2,8 +2,8 @@ import type { DNSRecord, ParsedRecord } from "../types/parser.types.ts";
 import { RecordType } from "../types/parser.types.ts";
 
 export const parseSOA = (dnsRecord: DNSRecord): ParsedRecord => {
-    const [mname, rname, serial, refresh, retry, expire, minimum] =
-        dnsRecord.rdata.trim().split(/\s+/);
+    const [mname, rname, serial, refresh, retry, expire, minimum] = dnsRecord
+        .rdata.trim().split(/\s+/);
 
     return {
         ...dnsRecord,
@@ -51,7 +51,12 @@ export const parseTXT = (dnsRecord: DNSRecord): ParsedRecord => ({
 export const parseMX = (dnsRecord: DNSRecord): ParsedRecord => {
     const [priority, exchange] = dnsRecord.rdata.trim().split(/\s+/);
 
-    return { ...dnsRecord, type: RecordType.MX, priority: Number(priority), exchange };
+    return {
+        ...dnsRecord,
+        type: RecordType.MX,
+        priority: Number(priority),
+        exchange,
+    };
 };
 
 export const parsePTR = (dnsRecord: DNSRecord): ParsedRecord => ({
@@ -61,7 +66,9 @@ export const parsePTR = (dnsRecord: DNSRecord): ParsedRecord => ({
 });
 
 export const parseSRV = (dnsRecord: DNSRecord): ParsedRecord => {
-    const [priority, weight, port, target] = dnsRecord.rdata.trim().split(/\s+/);
+    const [priority, weight, port, target] = dnsRecord.rdata.trim().split(
+        /\s+/,
+    );
 
     return {
         ...dnsRecord,
@@ -110,29 +117,59 @@ export const parseLOC = (dnsRecord: DNSRecord): ParsedRecord => {
     const latDeg = parseNum(parts[i++]);
     let latMin = 0, latSec = 0;
     let latHem = "N";
-    if (i < parts.length && !/^[NS]$/i.test(parts[i])) latMin = parseNum(parts[i++]);
-    if (i < parts.length && !/^[NS]$/i.test(parts[i])) latSec = parseNum(parts[i++]);
-    if (i < parts.length && /^[NS]$/i.test(parts[i])) latHem = parts[i++].toUpperCase();
+    if (i < parts.length && !/^[NS]$/i.test(parts[i])) {
+        latMin = parseNum(parts[i++]);
+    }
+    if (i < parts.length && !/^[NS]$/i.test(parts[i])) {
+        latSec = parseNum(parts[i++]);
+    }
+    if (i < parts.length && /^[NS]$/i.test(parts[i])) {
+        latHem = parts[i++].toUpperCase();
+    }
 
     /* :::: Longitude :::: */
     const lonDeg = parseNum(parts[i++]);
     let lonMin = 0, lonSec = 0;
     let lonHem = "E";
-    if (i < parts.length && !/^[EW]$/i.test(parts[i])) lonMin = parseNum(parts[i++]);
-    if (i < parts.length && !/^[EW]$/i.test(parts[i])) lonSec = parseNum(parts[i++]);
-    if (i < parts.length && /^[EW]$/i.test(parts[i])) lonHem = parts[i++].toUpperCase();
+    if (i < parts.length && !/^[EW]$/i.test(parts[i])) {
+        lonMin = parseNum(parts[i++]);
+    }
+    if (i < parts.length && !/^[EW]$/i.test(parts[i])) {
+        lonSec = parseNum(parts[i++]);
+    }
+    if (i < parts.length && /^[EW]$/i.test(parts[i])) {
+        lonHem = parts[i++].toUpperCase();
+    }
 
     /* :::: Optional altitude and precision :::: */
-    const altitude = i < parts.length ? parseNum(parts[i++].replace(/[mM]/, "")) : 0;
-    const size = i < parts.length ? parseNum(parts[i++].replace(/[mM]/, "")) : 1;
-    const horizPrecision = i < parts.length ? parseNum(parts[i++].replace(/[mM]/, "")) : 10000;
-    const vertPrecision = i < parts.length ? parseNum(parts[i++].replace(/[mM]/, "")) : 10;
+    const altitude = i < parts.length
+        ? parseNum(parts[i++].replace(/[mM]/, ""))
+        : 0;
+    const size = i < parts.length
+        ? parseNum(parts[i++].replace(/[mM]/, ""))
+        : 1;
+    const horizPrecision = i < parts.length
+        ? parseNum(parts[i++].replace(/[mM]/, ""))
+        : 10000;
+    const vertPrecision = i < parts.length
+        ? parseNum(parts[i++].replace(/[mM]/, ""))
+        : 10;
 
     return {
         ...dnsRecord,
         type: RecordType.LOC,
-        latitude: { degrees: latDeg, minutes: latMin, seconds: latSec, hemisphere: latHem },
-        longitude: { degrees: lonDeg, minutes: lonMin, seconds: lonSec, hemisphere: lonHem },
+        latitude: {
+            degrees: latDeg,
+            minutes: latMin,
+            seconds: latSec,
+            hemisphere: latHem,
+        },
+        longitude: {
+            degrees: lonDeg,
+            minutes: lonMin,
+            seconds: lonSec,
+            hemisphere: lonHem,
+        },
         altitude,
         size,
         horizPrecision,
@@ -226,7 +263,6 @@ export const parseIPSECKEY = (dnsRecord: DNSRecord): ParsedRecord => {
     };
 };
 
-
 export const parseALIAS = (dnsRecord: DNSRecord): ParsedRecord => {
     const target = dnsRecord.rdata.trim() || "";
 
@@ -236,7 +272,6 @@ export const parseALIAS = (dnsRecord: DNSRecord): ParsedRecord => {
         target,
     };
 };
-
 
 export const parseNAPTR = (dnsRecord: DNSRecord): ParsedRecord => {
     const parts = dnsRecord.rdata.trim().match(/(?:[^\s"]+|"[^"]*")+/g) || [];
@@ -352,33 +387,34 @@ export const parseRP = (dnsRecord: DNSRecord): ParsedRecord => {
     };
 };
 
-export const recordParsers: Record<RecordType, (r: DNSRecord) => ParsedRecord> = {
-    [RecordType.A]: parseA,
-    [RecordType.AAAA]: parseAAAA,
-    [RecordType.CNAME]: parseCNAME,
-    [RecordType.MX]: parseMX,
-    [RecordType.NS]: parseNS,
-    [RecordType.TXT]: parseTXT,
-    [RecordType.SOA]: parseSOA,
-    [RecordType.SRV]: parseSRV,
-    [RecordType.PTR]: parsePTR,
-    [RecordType.CAA]: parseCAA,
-    [RecordType.SPF]: parseSPF,
-    [RecordType.LOC]: parseLOC,
-    [RecordType.DS]: parseDS,
-    [RecordType.DNSKEY]: parseDNSKEY,
-    [RecordType.TLSA]: parseTLSA,
-    [RecordType.SSHFP]: parseSSHFP,
-    [RecordType.HTTPS]: parseHTTPS,
-    [RecordType.IPSECKEY]: parseIPSECKEY,
-    [RecordType.ALIAS]: parseALIAS,
-    [RecordType.NAPTR]: parseNAPTR,
-    [RecordType.CERT]: parseCERT,
-    [RecordType.SMIMEA]: parseSMIMEA,
-    [RecordType.SVCB]: parseSVCB,
-    [RecordType.URI]: parseURI,
-    [RecordType.DNAME]: parseDNAME,
-    [RecordType.HINFO]: parseHINFO,
-    [RecordType.OPENPGPKEY]: parseOPENPGPKEY,
-    [RecordType.RP]: parseRP,
-};
+export const recordParsers: Record<RecordType, (r: DNSRecord) => ParsedRecord> =
+    {
+        [RecordType.A]: parseA,
+        [RecordType.AAAA]: parseAAAA,
+        [RecordType.CNAME]: parseCNAME,
+        [RecordType.MX]: parseMX,
+        [RecordType.NS]: parseNS,
+        [RecordType.TXT]: parseTXT,
+        [RecordType.SOA]: parseSOA,
+        [RecordType.SRV]: parseSRV,
+        [RecordType.PTR]: parsePTR,
+        [RecordType.CAA]: parseCAA,
+        [RecordType.SPF]: parseSPF,
+        [RecordType.LOC]: parseLOC,
+        [RecordType.DS]: parseDS,
+        [RecordType.DNSKEY]: parseDNSKEY,
+        [RecordType.TLSA]: parseTLSA,
+        [RecordType.SSHFP]: parseSSHFP,
+        [RecordType.HTTPS]: parseHTTPS,
+        [RecordType.IPSECKEY]: parseIPSECKEY,
+        [RecordType.ALIAS]: parseALIAS,
+        [RecordType.NAPTR]: parseNAPTR,
+        [RecordType.CERT]: parseCERT,
+        [RecordType.SMIMEA]: parseSMIMEA,
+        [RecordType.SVCB]: parseSVCB,
+        [RecordType.URI]: parseURI,
+        [RecordType.DNAME]: parseDNAME,
+        [RecordType.HINFO]: parseHINFO,
+        [RecordType.OPENPGPKEY]: parseOPENPGPKEY,
+        [RecordType.RP]: parseRP,
+    };

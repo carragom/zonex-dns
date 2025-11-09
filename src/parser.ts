@@ -1,34 +1,38 @@
-import type { ParsedRecord, ParsedRecordByType, ParseOptions } from "./types/parser.types.ts";
+import type {
+    ParsedRecord,
+    ParsedRecordByType,
+    ParseOptions,
+} from "./types/parser.types.ts";
 import { RecordType } from "./types/parser.types.ts";
 import { extractRawRecords, sanitize } from "./utils/parser.helper.ts";
 import * as parser from "./utils/records.parser.ts";
-
 
 /**
  * Parse a BIND-style zone file into structured JSON records.
  * @param {string} input - BIND-style zone file contents.
  * @param {ParseOptions} [options] - Optional parsing options.
- *  
+ *
  * @returns {ParsedRecordByType | ParsedRecord[]} Parsed DNS records in either grouped or flattened format.
- * 
- * @example 
- * 
+ *
+ * @example
+ *
  * const records = parse(input);
- * 
  */
 
 export function parse(
-  input: string,
-  options?: Omit<ParseOptions, "flatten"> & { flatten?: false }
+    input: string,
+    options?: Omit<ParseOptions, "flatten"> & { flatten?: false },
 ): ParsedRecordByType;
 
-
 export function parse(
-  input: string,
-  options: Omit<ParseOptions, "flatten"> & { flatten: true }
+    input: string,
+    options: Omit<ParseOptions, "flatten"> & { flatten: true },
 ): ParsedRecord[];
 
-export function parse(input: string, options?: ParseOptions): ParsedRecordByType | ParsedRecord[]{
+export function parse(
+    input: string,
+    options?: ParseOptions,
+): ParsedRecordByType | ParsedRecord[] {
     const records = sanitize(input);
 
     const { records: dnsRecords } = extractRawRecords(records, options);
@@ -37,10 +41,12 @@ export function parse(input: string, options?: ParseOptions): ParsedRecordByType
         flatten: false,
     };
 
-    const groupedRecords: ParsedRecordByType = Object.values(RecordType).reduce(acc => {
-        return acc;
-    }, {} as ParsedRecordByType);
-
+    const groupedRecords: ParsedRecordByType = Object.values(RecordType).reduce(
+        (acc) => {
+            return acc;
+        },
+        {} as ParsedRecordByType,
+    );
 
     dnsRecords.forEach((dnsRecord) => {
         const type = dnsRecord.type.toUpperCase() as RecordType;
@@ -55,4 +61,4 @@ export function parse(input: string, options?: ParseOptions): ParsedRecordByType
     });
 
     return flatten ? Object.values(groupedRecords).flat() : groupedRecords;
-};
+}
