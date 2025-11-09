@@ -17,21 +17,21 @@
  * ```ts
  * import { generate } from 'zonex';
  * const zoneRecords: InputRecord[] = [
- *      {
- *          type: "A",
- *          name: "example.com.",
- *          ttl: 3600,
- *          class: "IN",
- *          address: "192.0.2.1",
- *      },
- *     {
- *         type: "MX",
- *         name: "mail.example.com.",
- *         ttl: 3600,
- *         class: "IN",
- *         preference: 10,
- *         exchange: "mail.example.com.",
- *     },
+ *   {
+ *     type: "A",
+ *     name: "example.com.",
+ *     ttl: 3600,
+ *     class: "IN",
+ *     address: "192.0.2.1",
+ *   },
+ *   {
+ *     type: "MX",
+ *     name: "mail.example.com.",
+ *     ttl: 3600,
+ *     class: "IN",
+ *     preference: 10,
+ *     exchange: "mail.example.com.",
+ *   },
  * ];
  * const zoneFileContent = generate(zoneRecords);
  * console.log(zoneFileContent);
@@ -91,7 +91,7 @@
  *
  * @example Parsing a Zone file
  * ```ts
- * import { parse, generate } from 'zonex';
+ * import { parse } from 'zonex';
  *
  * const zoneFileContent = `
  * $ORIGIN example.com.
@@ -208,10 +208,11 @@
 
 export { generate } from "./generator.ts";
 export { parse } from "./parser.ts";
-export type { GenerateOptions, InputRecord } from "./types/generator.types.ts";
-export { RecordType } from "./types/parser.types.ts";
+export { RecordType } from "./utils/records.parser.ts";
+
+export type { GenerateOptions, InputRecord } from "./generator.ts";
 export type {
     ParsedRecord,
     ParsedRecordByType,
     ParseOptions,
-} from "./types/parser.types.ts";
+} from "./utils/records.parser.ts";

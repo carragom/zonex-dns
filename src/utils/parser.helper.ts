@@ -1,40 +1,7 @@
-import type {
-    DNSRecord,
-    ParseOptions,
-    RecordType,
-} from "../types/parser.types.ts";
+import { type DNSRecord, type ParseOptions, RecordType } from "./records.parser.ts";
 
 export const DEFAULT_TTL = "3600";
-export const DnsTypes = [
-    "A",
-    "AAAA",
-    "CAA",
-    "CNAME",
-    "MX",
-    "NS",
-    "TXT",
-    "SRV",
-    "PTR",
-    "SOA",
-    "DS",
-    "DNSKEY",
-    "TLSA",
-    "SSHFP",
-    "HTTPS",
-    "IPSECKEY",
-    "ALIAS",
-    "SPF",
-    "NAPTR",
-    "CERT",
-    "LOC",
-    "SMIMEA",
-    "SVCB",
-    "URI",
-    "DNAME",
-    "HINFO",
-    "OPENPGPKEY",
-    "RP",
-];
+const dnsTypes = Object.keys(RecordType)
 
 export const sanitize = (input: string): string[] => {
     const records: string[] = [];
@@ -163,7 +130,7 @@ export const extractRawRecords = (
         reconstructed += " ";
 
         const typeRegex = new RegExp(
-            `(?:\\s|^)(${DnsTypes.join("|")})(?=\\s)`,
+            `(?:\\s|^)(${dnsTypes.join("|")})(?=\\s)`,
             "gmi",
         );
         const recordType = reconstructed.match(typeRegex)?.pop() ?? "";

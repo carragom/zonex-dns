@@ -1,6 +1,5 @@
-import type { GenerateOptions, InputRecord } from "./types/generator.types.ts";
-import type { DNSRecordsByType } from "./types/parser.types.ts";
 import { prepareRecord } from "./utils/generator.helper.ts";
+import type { DMS, DNSRecordsByType, RecordType } from "./utils/records.parser.ts";
 
 /**
  * Generates a BIND-style DNS zone file string from input records.
@@ -129,3 +128,22 @@ const toZoneFile = (
 
     return zoneFileContent;
 };
+
+/** Options for {@linkcode generate}. */
+export interface GenerateOptions {
+    origin?: string;
+    ttl?: number;
+    fieldMap?: {
+        [rrType: string]: Record<string, string>;
+    };
+    keepComments?: boolean;
+    keepHeaders?: boolean;
+}
+
+export interface InputRecord {
+    name: string;
+    type: keyof typeof RecordType;
+    ttl?: number;
+    class?: string;
+    [key: string]: string | number | undefined | DMS;
+}
