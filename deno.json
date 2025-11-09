@@ -1,0 +1,30 @@
+{
+	"name": "zonex-dns",
+	"version": "1.1.0-alpha.1",
+	"exports": "./src/index.ts",
+	"license": "MIT",
+	"lock": false,
+	"exclude": [
+		"./dist",
+		"./test"
+	],
+	"fmt": {
+		"indentWidth": 4
+	},
+	"tasks": {
+		"build": {
+			"dependencies": ["build:esm", "build:cjs"]
+		},
+		"build:esm": {
+			"command": "deno run -A npm:typescript/tsc src/index.ts --declaration --rewriteRelativeImportExtensions --target es2022 --module es2022 --outDir ./dist/esm"
+		},
+		"build:cjs": {
+			"command": "deno run -A npm:typescript/tsc src/index.ts --declaration --rewriteRelativeImportExtensions --target es2022 --module commonjs --outDir ./dist/cjs"
+		},
+		"clean": "rm -rf dist",
+		"fmt": "deno fmt --check"
+	},
+	"imports": {
+		"@std/assert": "jsr:@std/assert@1"
+	}
+}

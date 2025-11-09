@@ -1,6 +1,6 @@
-import { GenerateOptions, InputRecord } from "../types/generator.types";
-import { DNSRecord, RecordType } from "../types/parser.types";
-import { DEFAULT_TTL, normalizeTtl } from "./parser.helper";
+import { GenerateOptions, InputRecord } from "../types/generator.types.ts";
+import { DNSRecord, RecordType } from "../types/parser.types.ts";
+import { DEFAULT_TTL,normalizeTtl } from "./parser.helper.ts";
 
 export const CanonicalFieldOrder: Record<string, string[]> = {
     A: ["address"],

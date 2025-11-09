@@ -1,5 +1,5 @@
-import fs from "fs";
-import zonex from "../../src/index";
+import fs from "node:fs";
+import zonex from "../../src/index.ts";
 
 async function runTests() {
     const tests = JSON.parse(await fs.promises.readFile("./test/parser/tests.json", "utf-8"));

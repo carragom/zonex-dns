@@ -1,5 +1,5 @@
-import fs from "fs";
-import zonex from "../../src/index";
+import fs from "node:fs";
+import zonex from "../../src/index.ts";
 
 async function test(fileName: string) {
     const input = await fs.promises.readFile(`test/generator/${fileName}`, "utf-8");

@@ -1,5 +1,5 @@
-import { generate, toZoneFile } from "./generator";
-import { parse } from "./parser";
+import { generate, toZoneFile } from "./generator.ts";
+import { parse } from "./parser.ts";
 
 const zonex = { parse, generate, toZoneFile };
 

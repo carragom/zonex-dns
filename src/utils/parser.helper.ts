@@ -1,4 +1,4 @@
-import { DNSRecord, ParseOptions, RecordType } from "../types/parser.types";
+import { DNSRecord, ParseOptions, RecordType } from "../types/parser.types.ts";
 
 export const DEFAULT_TTL = "3600";
 export const DnsTypes = [

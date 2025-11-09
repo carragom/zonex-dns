@@ -1,6 +1,6 @@
-import { GenerateOptions, InputRecord } from "./types/generator.types";
-import { DNSRecordsByType } from "./types/parser.types";
-import { prepareRecord } from "./utils/generator.helper";
+import { GenerateOptions, InputRecord } from "./types/generator.types.ts";
+import { DNSRecordsByType } from "./types/parser.types.ts";
+import { prepareRecord } from "./utils/generator.helper.ts";
 
 /**
  * Generates a BIND-style DNS zone file string from input records.

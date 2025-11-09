@@ -1,6 +1,6 @@
-import { DNSRecord, ParsedRecord, ParsedRecordByType, ParseOptions, RecordType } from "./types/parser.types";
-import { extractRawRecords, sanitize } from "./utils/parser.helper";
-import * as parser from "./utils/records.parser";
+import { DNSRecord, ParsedRecord, ParsedRecordByType, ParseOptions, RecordType } from "./types/parser.types.ts";
+import { extractRawRecords, sanitize } from "./utils/parser.helper.ts";
+import * as parser from "./utils/records.parser.ts";
 
 
 /**
