@@ -17,7 +17,7 @@ Deno.test("Zone File Generation", async () => {
     });
 
     const expectedOutput = await Deno.readTextFile(
-        "./test/generator.zone",
+        "./tests/generator.zone",
     );
 
     assertEquals(removeDate(output), removeDate(expectedOutput));

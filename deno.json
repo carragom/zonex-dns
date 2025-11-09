@@ -12,7 +12,7 @@
     },
     "test": {
         "include": [
-            "./test"
+            "./tests"
         ],
         "permissions": {
             "read": true
@@ -37,7 +37,7 @@
         "clean": "rm -rf dist",
         "fmt": "deno fmt --check",
         "lint": "deno lint",
-        "test": "deno test -P"
+        "test": "deno tests -P"
     },
     "imports": {
         "@std/assert": "jsr:@std/assert@1"
