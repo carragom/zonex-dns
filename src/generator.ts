@@ -6,11 +6,11 @@ import { prepareRecord } from "./utils/generator.helper.ts";
  * Generates a BIND-style DNS zone file string from input records.
  *
  * @param records The input DNS records to be converted.
- * @param options - Optional settings for zone file generation.
+ * @param options Optional settings for zone file generation.
  *
  * @returns A BIND-style zone file string.
  *
- * @example
+ * @example Custom Field Mappings
  * ```ts
  * const fieldMap = {
  *   MX: {

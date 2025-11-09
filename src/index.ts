@@ -7,7 +7,7 @@
  * This library allows you to:
  * - Convert BIND-style zone files into JavaScript objects
  * - Generate zone files from JavaScript objects
- * - Support a wide variety of DNS record {@linkcode RecordType | types}.
+ * - Support a wide variety of DNS record {@linkcode RecordType}.
  * - Customizable field mappings to work with your own data structures
  * - TypeScript support for type safety and autocompletion
  * - RFC-compliant output for production use (after editing SOA/NS records as
@@ -208,3 +208,5 @@
 
 export { generate } from "./generator.ts";
 export { parse } from "./parser.ts";
+export { RecordType } from "./types/parser.types.ts";
+export type { GenerateOptions } from "./types/generator.types.ts";
