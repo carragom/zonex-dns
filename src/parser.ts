@@ -9,10 +9,10 @@ import * as parser from "./utils/records.parser.ts";
 
 /**
  * Parse a BIND-style zone file into structured JSON records.
- * @param {string} input - BIND-style zone file contents.
- * @param {ParseOptions} [options] - Optional parsing options.
+ * @param input BIND-style zone file contents.
+ * @param options Optional parsing options.
  *
- * @returns {ParsedRecordByType | ParsedRecord[]} Parsed DNS records in either grouped or flattened format.
+ * @returns Parsed DNS records in either grouped or flattened format.
  *
  * @example
  * ```ts

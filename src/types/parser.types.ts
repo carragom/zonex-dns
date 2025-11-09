@@ -1,3 +1,4 @@
+/** @enum {string} */
 export enum RecordType {
     A = "A",
     AAAA = "AAAA",
@@ -266,17 +267,11 @@ export type ParsedRecord =
     | RPRecord;
 
 export interface ParseOptions {
-    /**
-     * Preserve whitespace and indentation in the parsed output.
-     */
+    /** @type {boolean} Preserve whitespace and indentation in the parsed output. */
     preserveSpacing?: boolean;
-    /**
-     * Keep the trailing dot on fully qualified domain names.
-     */
+    /** @type {boolean} Keep the trailing dot on fully qualified domain names. */
     keepTrailingDot?: boolean;
-    /**
-     * Flatten the parsed records into a single array.
-     */
+    /** @type {boolean} Flatten the parsed records into a single array. */
     flatten?: boolean;
 }
 

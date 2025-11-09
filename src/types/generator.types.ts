@@ -1,5 +1,6 @@
 import type { RecordType } from "./parser.types.ts";
 
+/** Options for {@linkcode generate}. */
 export interface GenerateOptions {
     origin?: string;
     ttl?: number;

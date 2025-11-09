@@ -1,14 +1,13 @@
 /**
- * Port to JSR of {@link https://www.npmjs.com/package/zonex-dns | ZoneX}
+ * Port of {@link https://www.npmjs.com/package/zonex-dns | ZoneX}
  *
  * A lightweight TypeScript library for parsing and generating DNS zone files
- * compliant with RFC standards (e.g., {@link https://tools.ietf.org/html/rfc1035 | RFC 1035}).
+ * compliant with RFC standards (e.g. {@link https://tools.ietf.org/html/rfc1035 | RFC 1035}).
  *
  * This library allows you to:
  * - Convert BIND-style zone files into JavaScript objects
  * - Generate zone files from JavaScript objects
- * - Support a wide variety of DNS record types including A, AAAA, MX, CNAME,
- * NS, TXT, HINFO, SOA, RP, OPENPGPKEY, TLSA, SSHFP, SVCB, URI, and more.
+ * - Support a wide variety of DNS record {@linkcode RecordType | types}.
  * - Customizable field mappings to work with your own data structures
  * - TypeScript support for type safety and autocompletion
  * - RFC-compliant output for production use (after editing SOA/NS records as
@@ -207,5 +206,5 @@
  * @license MIT
  */
 
-export { generate, toZoneFile } from "./generator.ts";
+export { generate } from "./generator.ts";
 export { parse } from "./parser.ts";

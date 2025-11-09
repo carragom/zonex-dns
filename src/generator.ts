@@ -5,10 +5,10 @@ import { prepareRecord } from "./utils/generator.helper.ts";
 /**
  * Generates a BIND-style DNS zone file string from input records.
  *
- * @param {InputRecord[]} records - The input DNS records to be converted.
- * @param {GenerateOptions} [options] - Optional settings for zone file generation.
+ * @param records The input DNS records to be converted.
+ * @param options - Optional settings for zone file generation.
  *
- * @returns {string} A BIND-style zone file string.
+ * @returns A BIND-style zone file string.
  *
  * @example
  * ```ts
@@ -48,16 +48,16 @@ export const generate = (
 /**
  * Converts structured DNS records into a BIND-style zone file string.
  *
- * @param {DNSRecordsByType} dnsRecords - A map of DNS record types to arrays of records.
- * @param {string} origin - The origin of the DNS zone.
- * @param {number} [ttl=3600] - The default TTL for records without a TTL specified.
- * @param {boolean} [keepComments=false] - Whether to include comments in the zone file.
- * @param {boolean} [keepHeaders=true] - Whether to include headers in the zone file.
+ * @param dnsRecords A map of DNS record types to arrays of records.
+ * @param origin The origin of the DNS zone.
+ * @param ttl The default TTL for records without a TTL specified.
+ * @param keepComments Whether to include comments in the zone file.
+ * @param keepHeaders Whether to include headers in the zone file.
  *
- * @returns {string} A BIND-style zone file string.
+ * @returns A BIND-style zone file string.
  */
 
-export const toZoneFile = (
+const toZoneFile = (
     dnsRecords: DNSRecordsByType,
     origin: string,
     ttl: number,
