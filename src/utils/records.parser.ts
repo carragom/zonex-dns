@@ -1,4 +1,5 @@
-import { DNSRecord, ParsedRecord, RecordType } from "../types/parser.types.ts";
+import type { DNSRecord, ParsedRecord } from "../types/parser.types.ts";
+import { RecordType } from "../types/parser.types.ts";
 
 export const parseSOA = (dnsRecord: DNSRecord): ParsedRecord => {
     const [mname, rname, serial, refresh, retry, expire, minimum] =

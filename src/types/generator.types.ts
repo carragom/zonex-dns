@@ -1,3 +1,5 @@
+import type { RecordType } from "./parser.types.ts";
+
 export interface GenerateOptions {
     origin?: string;
     ttl?: number;
@@ -10,7 +12,7 @@ export interface GenerateOptions {
 
 export interface InputRecord {
     name: string
-    type: string
+    type: RecordType
     ttl?: number
     class?: string
 }

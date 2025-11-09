@@ -1,6 +1,6 @@
-import { GenerateOptions, InputRecord } from "../types/generator.types.ts";
-import { DNSRecord, RecordType } from "../types/parser.types.ts";
-import { DEFAULT_TTL,normalizeTtl } from "./parser.helper.ts";
+import type { GenerateOptions, InputRecord } from "../types/generator.types.ts";
+import type { DNSRecord } from "../types/parser.types.ts";
+import { normalizeTtl } from "./parser.helper.ts";
 
 export const CanonicalFieldOrder: Record<string, string[]> = {
     A: ["address"],
@@ -55,7 +55,7 @@ export const prepareRecord = (record: InputRecord, options?: GenerateOptions): D
         name: record.name,
         ttl: normalizeTtl(record.ttl ?? options?.ttl),
         class: record.class ?? "IN",
-        type: record.type as RecordType,
+        type: record.type,
         rdata: buildRdata(record, fieldMap?.[record.type]),
     };
 };
@@ -68,11 +68,13 @@ export const buildRdata = (record: InputRecord, fieldMap?: Record<string, string
     const values = keyOrder.map((canonicalKey) => {
         const inputKey = fieldMap?.[canonicalKey] ?? canonicalKey;
 
+        // deno-lint-ignore no-explicit-any
         if (!inputKey.includes(".")) return (record as any)[inputKey];
 
         const keyParts = inputKey.split(".").map((p) => p.trim()).filter(Boolean) as string[];
 
         let keyValue = "";
+        // deno-lint-ignore no-explicit-any
         let keyData: any = record;
 
         for (const key of keyParts) {

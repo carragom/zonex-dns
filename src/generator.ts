@@ -1,5 +1,5 @@
-import { GenerateOptions, InputRecord } from "./types/generator.types.ts";
-import { DNSRecordsByType } from "./types/parser.types.ts";
+import type { GenerateOptions, InputRecord } from "./types/generator.types.ts";
+import type { DNSRecordsByType } from "./types/parser.types.ts";
 import { prepareRecord } from "./utils/generator.helper.ts";
 
 /**

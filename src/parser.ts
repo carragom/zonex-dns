@@ -1,4 +1,5 @@
-import { DNSRecord, ParsedRecord, ParsedRecordByType, ParseOptions, RecordType } from "./types/parser.types.ts";
+import type { ParsedRecord, ParsedRecordByType, ParseOptions } from "./types/parser.types.ts";
+import { RecordType } from "./types/parser.types.ts";
 import { extractRawRecords, sanitize } from "./utils/parser.helper.ts";
 import * as parser from "./utils/records.parser.ts";
 
@@ -36,7 +37,7 @@ export function parse(input: string, options?: ParseOptions): ParsedRecordByType
         flatten: false,
     };
 
-    const groupedRecords: ParsedRecordByType = Object.values(RecordType).reduce((acc, type) => {
+    const groupedRecords: ParsedRecordByType = Object.values(RecordType).reduce(acc => {
         return acc;
     }, {} as ParsedRecordByType);
 
@@ -50,7 +51,7 @@ export function parse(input: string, options?: ParseOptions): ParsedRecordByType
             groupedRecords[type] = [];
         }
 
-        groupedRecords[type].push(parsedRecord as any);
+        (groupedRecords[type] as ParsedRecord[]).push(parsedRecord);
     });
 
     return flatten ? Object.values(groupedRecords).flat() : groupedRecords;
